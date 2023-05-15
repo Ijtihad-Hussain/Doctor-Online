@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "260440581698",
+    "project_id": "doctoronline-1abd5",
+    "storage_bucket": "doctoronline-1abd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260440581698:android:fa2eb2b5982fc75b35afdb",
+        "android_client_info": {
+          "package_name": "com.example.doctor_online"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "260440581698-h0ha2n2qfipa4tq7c14c71c91vrcglca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.doctor_online",
+            "certificate_hash": "15293cbf2386b459cf4e36957203317576068190"
+          }
+        },
+        {
+          "client_id": "260440581698-hp5jth3dqvur6gjsjnc3v27alu2sp364.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUnFAH2g6DXsfEUcT1Tg3u73YSlaxp9sQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "260440581698-hp5jth3dqvur6gjsjnc3v27alu2sp364.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260440581698:android:4a5a443230b6e7b835afdb",
+        "android_client_info": {
+          "package_name": "com.ijtihad.doctor_online"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "260440581698-hp5jth3dqvur6gjsjnc3v27alu2sp364.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUnFAH2g6DXsfEUcT1Tg3u73YSlaxp9sQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "260440581698-hp5jth3dqvur6gjsjnc3v27alu2sp364.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
