@@ -49,6 +49,7 @@ class DiagnosticTests extends StatelessWidget {
               LabTestCard(
                 text1: 'Ghazi Lab',
                 image: Image.asset('assets/images/lab2.jpg'),
+                onPressed: (){},
               ),
             ],
           ),

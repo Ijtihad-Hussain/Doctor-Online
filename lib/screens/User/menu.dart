@@ -16,6 +16,7 @@ import 'package:tele_consult/widgets/pageDecoration.dart';
 
 import '../../services/firebase_services.dart';
 import '../../widgets/button.dart';
+import '../../widgets/firstLetterAvatar.dart';
 import '../auth/sign_in.dart';
 import 'myDoctors.dart';
 
@@ -62,10 +63,11 @@ class _MenuState extends State<Menu> {
                 padding: const EdgeInsets.only(left: 20, top: 60),
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      backgroundImage:
-                          AssetImage('assets/images/abuzar-xheikh.jpg'),
+                    FirstLetterAvatar(
+                      text: userName,
                       radius: 32,
+                      backgroundColor: Colors.blue,
+                      textColor: Colors.white,
                     ),
                     Column(
                       children: [
@@ -100,52 +102,52 @@ class _MenuState extends State<Menu> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MyDoctors()),
+                      MaterialPageRoute(builder: (context) => DiagnosticTests()),
                     );
                   },
                   child: BoxContainer(
-                    text: 'My Doctors',
-                    iconLeft: const Icon(Icons.contact_page_outlined),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 120),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MedicalRecords()),
-                    );
-                  },
-                  child: BoxContainer(
-                    text: 'Medical Records',
-                    iconLeft: const Icon(Icons.medical_information),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 120),
-                child: BoxContainer(
-                  text: 'Payments',
-                  iconLeft: const Icon(Icons.payment),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 120),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddTests()),
-                    );
-                  },
-                  child: BoxContainer(
-                    text: 'Test Bookings',
+                    text: 'Book Lab Test',
                     iconLeft: const Icon(Icons.book),
                   ),
                 ),
               ),
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 10, right: 120),
+              //   child: GestureDetector(
+              //     onTap: () {
+              //       Navigator.push(
+              //         context,
+              //         MaterialPageRoute(builder: (context) => MedicalRecords()),
+              //       );
+              //     },
+              //     child: BoxContainer(
+              //       text: 'Medical Records',
+              //       iconLeft: const Icon(Icons.medical_information),
+              //     ),
+              //   ),
+              // ),
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 10, right: 120),
+              //   child: BoxContainer(
+              //     text: 'Payments',
+              //     iconLeft: const Icon(Icons.payment),
+              //   ),
+              // ),
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 10, right: 120),
+              //   child: GestureDetector(
+              //     onTap: () {
+              //       Navigator.push(
+              //         context,
+              //         MaterialPageRoute(builder: (context) => AddTests()),
+              //       );
+              //     },
+              //     child: BoxContainer(
+              //       text: 'Test Bookings',
+              //       iconLeft: const Icon(Icons.book),
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.only(top: 10, right: 120),
                 child: GestureDetector(
@@ -219,7 +221,7 @@ class _MenuState extends State<Menu> {
                       },
                       child: Text(
                         isLoggedIn() ? 'Logout' : 'Log in',
-                        style: TextStyle(color: Colors.white, fontSize: 22),
+                        style: TextStyle(color: Colors.black87, fontSize: 22),
                       ),
                     ),
                   ),

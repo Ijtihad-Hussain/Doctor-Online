@@ -5,7 +5,9 @@ import '../../widgets/button.dart';
 import '../../widgets/customTextFormField.dart';
 import 'appointmentNext.dart';
 
-class DoctorProfilePage extends StatelessWidget {
+String? DoctorName;
+
+class DoctorProfilePage extends StatefulWidget {
   final String doctorName;
   final String specialization;
   final String experience;
@@ -18,6 +20,20 @@ class DoctorProfilePage extends StatelessWidget {
     required this.experience,
     required this.image,
   }) : super(key: key);
+
+  @override
+  State<DoctorProfilePage> createState() => _DoctorProfilePageState();
+}
+
+class _DoctorProfilePageState extends State<DoctorProfilePage> {
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    DoctorName = widget.doctorName;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +51,7 @@ class DoctorProfilePage extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: image,
+                  image: widget.image,
                 ),
               ),
               child: Column(
@@ -82,7 +98,7 @@ class DoctorProfilePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    doctorName,
+                    widget.doctorName,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -90,7 +106,7 @@ class DoctorProfilePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    specialization,
+                    widget.specialization,
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.grey,
@@ -106,7 +122,7 @@ class DoctorProfilePage extends StatelessWidget {
                       ),
                       const SizedBox(width: 5),
                       Text(
-                        '${experience}',
+                        '${widget.experience}',
                         style: const TextStyle(
                           fontSize: 16,
                         ),
@@ -234,7 +250,7 @@ Widget _patientDetailsDialog(BuildContext context) {
               age: age,
               gender: gender,
               mobileNumber: mobileNumber,
-              doctorName: name
+              doctorName: DoctorName!,
             )),
           );
         },

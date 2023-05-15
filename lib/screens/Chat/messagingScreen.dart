@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import '../../models/message.dart';
 import '../../models/user.dart';
@@ -21,20 +22,6 @@ class _MessagingScreenState extends State<MessagingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.selectedUser.name),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.video_call),
-            onPressed: () {
-              Navigator.pushNamed(context, '/video_call');
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.call),
-            onPressed: () {
-              Navigator.pushNamed(context, '/audio_call');
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -67,6 +54,11 @@ class _MessagingScreenState extends State<MessagingScreen> {
                   ),
                 ),
                 IconButton(
+                  icon: const Icon(Icons.attach_file),
+                  onPressed: () {},
+                  // _showFilePicker,
+                ),
+                IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: () {
                     final text = _textEditingController.text.trim();
@@ -91,6 +83,23 @@ class _MessagingScreenState extends State<MessagingScreen> {
       ),
     );
   }
+
+  // void _showFilePicker() async {
+  //   final file = await FilePicker.getFile();
+  //   if (file != null) {
+  //     final message = Message(
+  //       sender: widget.currentUser,
+  //       receiver: widget.selectedUser,
+  //       text: file.path,
+  //       messageType: MessageType.file,
+  //       fileName: path.basename(file.path),
+  //     );
+  //     setState(() {
+  //       messages.add(message);
+  //     });
+  //   }
+  // }
+
 
   Widget _buildSentMessage(Message message) {
     return Row(
@@ -165,5 +174,4 @@ class _MessagingScreenState extends State<MessagingScreen> {
       ],
     );
   }
-
 }

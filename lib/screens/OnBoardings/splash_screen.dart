@@ -9,7 +9,6 @@ import 'package:tele_consult/screens/OnBoardings/onBoarding1.dart';
 import 'package:tele_consult/screens/home_screen.dart';
 
 import '../../widgets/pageDecoration.dart';
-import '../User/menu.dart';
 
 class SplashScreen extends StatelessWidget {
   Future<FirebaseApp> initialize = Firebase.initializeApp();
@@ -40,24 +39,17 @@ class SplashScreen extends StatelessWidget {
               if (streamSnapshot.connectionState == ConnectionState.active) {
                 User? user = streamSnapshot.data;
                 if (user == null) {
-                  if (kIsWeb) {
-
-                  } else {
                     return ScreenTypeLayout(
                       mobile: OnBoarding1(),
                       tablet: OnBoarding1(),
                       desktop: OnBoarding1(),
                     );
-                  }
                 } else {
-                  if (kIsWeb) {
-                  } else {
                     return ScreenTypeLayout(
                       mobile: HomeScreen(),
                       tablet: HomeScreen(),
                       desktop: HomeScreen(),
                     );
-                  }
                 }
               }
               return Scaffold(

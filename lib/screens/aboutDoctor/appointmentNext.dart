@@ -254,6 +254,7 @@ class _AppointmentNextState extends State<AppointmentNext> {
                 int age = widget.age;
                 String gender = widget.gender;
                 String mobileNumber = widget.mobileNumber;
+                String doctorName = widget.doctorName;
                 String selectedTime = _selectedTime ?? '';
                 String selectedDate = '${myDay(_selectedTimeIndex)}, ${myMonth(_selectedTimeIndex)} ${myDate(_selectedTimeIndex)}';
 
@@ -267,6 +268,7 @@ class _AppointmentNextState extends State<AppointmentNext> {
                     'age': age,
                     'gender': gender,
                     'mobileNumber': mobileNumber,
+                    'doctorName': doctorName,
                     'selectedTime': selectedTime,
                     'selectedDate': selectedDate,
                     'selectedAlarmTime': _selectedAlarmTime,
@@ -290,6 +292,3 @@ class _AppointmentNextState extends State<AppointmentNext> {
     );
   }
 }
-
-
-

@@ -1,23 +1,18 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:tele_consult/screens/User/contacts.dart';
+import 'package:tele_consult/screens/User/myAppointmentsScreen.dart';
 import 'package:tele_consult/screens/aboutDoctor/popularDoctors.dart';
 import 'package:tele_consult/screens/askDoctorPage.dart';
 import 'package:tele_consult/screens/departments.dart';
 import 'package:tele_consult/screens/diagnosticTests.dart';
 import 'package:tele_consult/screens/emergencyDoctorPage.dart';
-import 'package:tele_consult/widgets/boxContainer.dart';
-import 'package:tele_consult/widgets/contactBox.dart';
-import 'package:tele_consult/widgets/customTextFormField.dart';
 import 'package:tele_consult/widgets/doctorCardVertical.dart';
 import 'package:tele_consult/widgets/pageDecoration.dart';
 import '../utils/colors.dart';
 import '../widgets/button.dart';
-import '../widgets/clipRRectCard.dart';
-import 'OnBoardings/splash_screen.dart';
-import 'aboutDoctor/favouriteDoctor.dart';
 import 'aboutDoctor/findDoctors.dart';
 import 'User/menu.dart';
-import 'mainMenu.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> pages = [
     Home(),
-    FavouriteDoctor(),
+    MyAppointments(),
     Contacts(),
     FindDoctors(),
   ];
@@ -46,10 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Doctor Online'),
-      // ),
-      // extendBodyBehindAppBar: true,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: myCurrentIndex,
         onTap: onItemTap,
@@ -59,8 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: "Favourites",
+            icon: Icon(Icons.access_time_filled),
+            label: "My Appointments",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
@@ -80,7 +71,54 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
+
 class _HomeState extends State<Home> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _configureFirebaseMessaging();
+  }
+
+  void _configureFirebaseMessaging() {
+    _firebaseMessaging.requestPermission();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // Handle incoming messages when the app is in the foreground
+      print("Received message: ${message.notification?.title}");
+      // Display an in-app notification or update the UI accordingly
+
+      // Check if the message is about a new appointment booking
+      if (message.data.containsKey('type') && message.data['type'] == 'new_appointment') {
+        // Handle the new appointment notification
+        String appointmentId = message.data['appointmentId'];
+        String patientName = message.data['patientName'];
+        String appointmentTime = message.data['appointmentTime'];
+
+        // Display a specific notification or update the UI for new appointment bookings
+        // You can also navigate to a relevant screen to show the details of the new appointment
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // Handle notification taps when the app is in the background or terminated
+      print("Opened app from notification: ${message.notification?.title}");
+      // Navigate to the relevant screen or update the UI as needed
+
+      // Check if the message is about an appointment reminder
+      if (message.data.containsKey('type') && message.data['type'] == 'appointment_reminder') {
+        // Handle the appointment reminder notification
+        String appointmentId = message.data['appointmentId'];
+        String patientName = message.data['patientName'];
+        String appointmentTime = message.data['appointmentTime'];
+
+        // Display a specific notification or update the UI for appointment reminders
+        // You can also navigate to a relevant screen to show the details of the appointment
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,16 +130,8 @@ class _HomeState extends State<Home> {
           IconButton(
             icon: const Icon(Icons.notifications_sharp),
             tooltip: 'Notification Icon',
-            onPressed: () {
-            },
-          ), //IconButton
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/talhaYaseen.jpeg'),
-              radius: 22,
-            ),
-          ), //IconButton
+            onPressed: () {},
+          ),
         ], //<Widget>[]
         leading: IconButton(
           icon: const Icon(Icons.menu),

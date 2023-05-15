@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
+  firebase_core
   permission_handler_windows
   smart_auth
   zego_express_engine

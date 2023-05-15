@@ -23,7 +23,7 @@ class DoctorCart extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => DoctorProfilePage(
-              name: name,
+              doctorName: name,
               specialization: specialization,
               experience: experience,
               image: image,
