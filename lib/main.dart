@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
             '/doctor-details': (context) => DoctorDetails(),
             '/doctor-home': (context) => DoctorHome(),
             '/login': (context) => SignIn(),
-            '/video_call': (context) => VideoCalling(callID: 'ijhhh'),
+            '/video_call': (context) => VideoCalling(callID: 'ij'),
             '/audio_call': (context) => AudioCalling(callingId:'IJH'),
           },
         ),
