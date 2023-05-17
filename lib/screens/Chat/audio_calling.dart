@@ -12,7 +12,7 @@ class AudioCalling extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
         child: ZegoUIKitPrebuiltCall(
-          appID: Utils.appId ,
+          appID: Utils.appId,
           appSign: Utils.appSignin,
           userID: callingId,
           callID: callingId,

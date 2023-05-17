@@ -13,43 +13,17 @@ class Contacts extends StatefulWidget {
 }
 
 class _ContactsState extends State<Contacts> {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   late DocumentSnapshot<Map<String, dynamic>> userData;
 
-  Future<Map<String, dynamic>?> getUserData() async {
-    final User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      // No user is signed in
-      return null;
-    }
-
-    userData = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(user.uid)
-        .get();
-
-    if (!userData.exists) {
-      // Document doesn't exist
-      return null;
-    }
-
-    final Map<String, dynamic>? data = userData.data();
-    print("${user.uid}${userData.data()?['name']}");
-    return data;
-  }
-
-
-  final CollectionReference usersCollection =
+  final CollectionReference doctorsCollection =
   FirebaseFirestore.instance.collection('doctors');
 
   @override
   void initState() {
-    getUserData();
     print(_auth.currentUser?.uid);
-    // TODO: implement initState
     super.initState();
   }
 
@@ -57,38 +31,50 @@ class _ContactsState extends State<Contacts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contacts'),
+        title: const Text('Contacts'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: usersCollection.snapshots(),
+        stream: doctorsCollection.snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
           if (!snapshot.hasData) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          final users = snapshot.data!.docs;
+          final doctors = snapshot.data!.docs;
 
           return ListView.builder(
-            itemCount: users.length,
+            itemCount: doctors.length,
             itemBuilder: (context, index) {
-              final user = users[index].data() as Map<String, dynamic>;
-              final name = user['name'] ?? '';
-              final email = user['email'] ?? '';
-              final userId = user['userId'] ?? '';
-              final avatarUrl = user['avatarUrl'] ??
+              final doctor =
+              doctors[index].data() as Map<String, dynamic>;
+              final name = doctor['name'] ?? '';
+              final email = doctor['email'] ?? '';
+              final userId = doctor['userId'] ?? '';
+              final avatarUrl = doctor['avatarUrl'] ??
                   'https://i.pravatar.cc/150?img=$index';
-              final selectedUser =
-              AppUser(id: userId, name: name, avatarUrl: avatarUrl);
+
+              // Get the current user ID
+              final currentUserId = _auth.currentUser?.uid;
+
+              // Create the current user instance
               final currentUser = AppUser(
-                id: _auth.currentUser?.uid ?? '',
+                id: currentUserId ?? '',
                 name: '',
                 avatarUrl: 'https://i.pravatar.cc/150?img=2',
               );
+
+              // Create the selected user instance
+              final selectedUser = AppUser(
+                id: userId,
+                name: name,
+                avatarUrl: avatarUrl,
+              );
+
               return GestureDetector(
                 onTap: () {
                   Navigator.push(

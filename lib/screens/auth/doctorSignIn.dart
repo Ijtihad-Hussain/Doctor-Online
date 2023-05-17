@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../services/firebase_services.dart';
 import '../../widgets/button.dart';
@@ -46,24 +47,59 @@ class _DoctorSignInState extends State<DoctorSignIn> {
         });
   }
 
+  // submit() async {
+  //   if (formKey.currentState!.validate()) {
+  //     setState(() {
+  //       formStateLoading = true;
+  //     });
+  //
+  //     String? accountstatus =
+  //     await FirebaseServices.signInAccount(emailC.text, passwordC.text);
+  //
+  //     // print(accountstatus);
+  //     if (accountstatus != null) {
+  //       ecoDialogue(accountstatus);
+  //       setState(() {
+  //         formStateLoading = false;
+  //       });
+  //     } else {
+  //       Navigator.push(
+  //           context, MaterialPageRoute(builder: (_) => DoctorHome()));
+  //     }
+  //   }
+  // }
   submit() async {
     if (formKey.currentState!.validate()) {
       setState(() {
         formStateLoading = true;
       });
 
-      String? accountstatus =
-      await FirebaseServices.signInAccount(emailC.text, passwordC.text);
+      // Retrieve the user document from Firestore
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('doctors')
+          .doc()
+          .get();
 
-      // print(accountstatus);
-      if (accountstatus != null) {
-        ecoDialogue(accountstatus);
+      // Check if the user exists and has the 'doctor' role
+      if (userSnapshot.exists && (userSnapshot.data() as Map<String, dynamic>)['role'] == 'doctor') {
+        String? accountstatus =
+        await FirebaseServices.signInAccount(
+            emailC.text, passwordC.text);
+
+        if (accountstatus != null) {
+          ecoDialogue(accountstatus);
+          setState(() {
+            formStateLoading = false;
+          });
+        } else {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => DoctorHome()));
+        }
+      } else {
+        ecoDialogue('Access denied. Please sign in as a doctor.');
         setState(() {
           formStateLoading = false;
         });
-      } else {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => DoctorHome()));
       }
     }
   }

@@ -55,7 +55,7 @@ class _SignUpState extends State<SignUp> {
           MaterialPageRoute(
             builder: (_) =>
                 HomeScreen(),
-                // OTPScreen(phoneC.text),
+            // OTPScreen(phoneC.text),
           ),
         );
         // const SignIn()));
@@ -83,8 +83,14 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
         decoration: PageDecoration.pageDecoration,
         padding: const EdgeInsets.symmetric(vertical: 120, horizontal: 60),
         child: SingleChildScrollView(
@@ -224,21 +230,19 @@ class _SignUpState extends State<SignUp> {
   Future registerUser() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = await FirebaseAuth.instance.currentUser;
+
     try {
-      await auth
-          .createUserWithEmailAndPassword(
-              email: emailC.text, password: passwordC.text)
-          .then((signedInUser) => {
-                FirebaseFirestore.instance
-                    .collection("Users")
-                    .doc(signedInUser.user?.uid)
-                    .set({
-                  'userId': user?.uid,
-                  'email': emailC.text,
-                  // 'phone': phoneC.text,
-                  'name': nameC.text,
-                })
-              });
+      await auth.createUserWithEmailAndPassword(
+          email: emailC.text, password: passwordC.text).then((signedInUser) =>
+      {
+        FirebaseFirestore.instance.collection("Users").doc(
+            signedInUser.user?.uid).set({
+          'userId': user?.uid,
+          'email': emailC.text,
+          'name': nameC.text,
+        })
+      });
+      print('New user registered');
     } catch (e) {
       print(e);
       return e;

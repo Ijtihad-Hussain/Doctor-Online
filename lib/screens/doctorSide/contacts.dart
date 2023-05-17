@@ -13,43 +13,17 @@ class Contacts extends StatefulWidget {
 }
 
 class _ContactsState extends State<Contacts> {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   late DocumentSnapshot<Map<String, dynamic>> userData;
-
-  Future<Map<String, dynamic>?> getUserData() async {
-    final User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      // No user is signed in
-      return null;
-    }
-
-    userData = await FirebaseFirestore.instance
-        .collection('doctors')
-        .doc(user.uid)
-        .get();
-
-    if (!userData.exists) {
-      // Document doesn't exist
-      return null;
-    }
-
-    final Map<String, dynamic>? data = userData.data();
-    print("${user.uid}${userData.data()?['name']}");
-    return data;
-  }
-
 
   final CollectionReference usersCollection =
   FirebaseFirestore.instance.collection('Users');
 
   @override
   void initState() {
-    getUserData();
     print(_auth.currentUser?.uid);
-    // TODO: implement initState
     super.initState();
   }
 
@@ -57,7 +31,7 @@ class _ContactsState extends State<Contacts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contacts'),
+        title: const Text('Contacts'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: usersCollection.snapshots(),
@@ -66,7 +40,7 @@ class _ContactsState extends State<Contacts> {
             return Text('Error: ${snapshot.error}');
           }
           if (!snapshot.hasData) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -82,13 +56,24 @@ class _ContactsState extends State<Contacts> {
               final userId = user['userId'] ?? '';
               final avatarUrl = user['avatarUrl'] ??
                   'https://i.pravatar.cc/150?img=$index';
-              final selectedUser =
-              AppUser(id: userId, name: name, avatarUrl: avatarUrl);
+
+              // Get the current user ID
+              final currentUserId = _auth.currentUser?.uid;
+
+              // Create the current user instance
               final currentUser = AppUser(
-                id: _auth.currentUser!.uid,
+                id: currentUserId ?? '',
                 name: '',
                 avatarUrl: 'https://i.pravatar.cc/150?img=2',
               );
+
+              // Create the selected user instance
+              final selectedUser = AppUser(
+                id: userId,
+                name: name,
+                avatarUrl: avatarUrl,
+              );
+
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
