@@ -83,21 +83,6 @@ class MainMenu extends StatelessWidget {
                   ),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 10, right: 120),
-              //   child: GestureDetector(
-              //     onTap: () {
-              //       Navigator.push(
-              //         context,
-              //         MaterialPageRoute(builder: (context) => DoctorSignIn()),
-              //       );
-              //     },
-              //     child: BoxContainer(
-              //       text: 'Are you a Doctor',
-              //       iconLeft: Icon(Icons.person),
-              //     ),
-              //   ),
-              // ),
               Padding(
                 padding: const EdgeInsets.only(top: 10, right: 120),
                 child: GestureDetector(

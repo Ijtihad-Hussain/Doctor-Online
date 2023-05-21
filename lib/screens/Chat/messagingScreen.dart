@@ -55,8 +55,25 @@ class _MessagingScreenState extends State<MessagingScreen> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.attach_file),
-                  onPressed: () {},
-                  // _showFilePicker,
+                  onPressed: () async {
+                    final pickedFile = await FilePicker.platform.pickFiles();
+                    if (pickedFile != null) {
+                      final fileBytes = pickedFile.files.single.bytes;
+                      final fileName = pickedFile.files.single.name;
+                      final int fileSize = (pickedFile.files.single.size / 1024).toInt();
+                      final message = Message(
+                        sender: widget.currentUser,
+                        receiver: widget.selectedUser,
+                        text: '$fileName ($fileSize kb)',
+                        messageType: MessageType.file,
+                        fileBytes: fileBytes,
+                        fileName: fileName,
+                      );
+                      setState(() {
+                        messages.add(message);
+                      });
+                    }
+                  },
                 ),
                 IconButton(
                   icon: const Icon(Icons.send),
@@ -83,23 +100,6 @@ class _MessagingScreenState extends State<MessagingScreen> {
       ),
     );
   }
-
-  // void _showFilePicker() async {
-  //   final file = await FilePicker.getFile();
-  //   if (file != null) {
-  //     final message = Message(
-  //       sender: widget.currentUser,
-  //       receiver: widget.selectedUser,
-  //       text: file.path,
-  //       messageType: MessageType.file,
-  //       fileName: path.basename(file.path),
-  //     );
-  //     setState(() {
-  //       messages.add(message);
-  //     });
-  //   }
-  // }
-
 
   Widget _buildSentMessage(Message message) {
     return Row(
@@ -131,47 +131,50 @@ class _MessagingScreenState extends State<MessagingScreen> {
   }
 
   Widget _buildReceivedMessage(Message message) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        CircleAvatar(
-          backgroundImage: NetworkImage(widget.selectedUser.avatarUrl),
-        ),
-        const SizedBox(width: 8),
-        Container(
-          margin: const EdgeInsets.only(top: 8, bottom: 8, right: 80),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-              bottomRight: Radius.circular(16),
-            ),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundImage: NetworkImage(widget.selectedUser.avatarUrl),
           ),
-          child: message.messageType == MessageType.text
-              ? Text(
-            message.text,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-            ),
-          )
-              : Row(
-            children: [
-              const Icon(Icons.insert_drive_file),
-              const SizedBox(width: 8),
-              Text(
-                message.text,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                ),
+          const SizedBox(width: 8),
+          Container(
+            margin: const EdgeInsets.only(top: 8, bottom: 8, right: 80),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+                bottomRight: Radius.circular(16),
               ),
-            ],
+            ),
+            child: message.messageType == MessageType.text
+                ? Text(
+              message.text,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+              ),
+            )
+                : Row(
+              children: [
+                const Icon(Icons.insert_drive_file),
+                const SizedBox(width: 8),
+                Text(
+                  message.text,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

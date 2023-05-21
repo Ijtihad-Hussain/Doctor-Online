@@ -28,7 +28,6 @@ class _SignUpState extends State<SignUp> {
   TextEditingController passwordC = TextEditingController();
   TextEditingController nameC = TextEditingController();
   TextEditingController phoneC = TextEditingController();
-  String? _verificationCode;
   bool formStateLoading = false;
 
   void toggle() {
@@ -37,31 +36,30 @@ class _SignUpState extends State<SignUp> {
     });
   }
 
-  submit() async {
-    if (formKey.currentState!.validate()) {
-      setState(() {
-        formStateLoading = true;
-      });
-      String? accountStatus = await FirebaseServices.createAccount(
-          emailC.text, passwordC.text, nameC.text);
-      print('accoutStatus:$accountStatus');
-      if (accountStatus != null) {
-        setState(() {
-          formStateLoading = false;
-        });
-      } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) =>
-                HomeScreen(),
-            // OTPScreen(phoneC.text),
-          ),
-        );
-        // const SignIn()));
-      }
-    }
-  }
+  // submit() async {
+  //   if (formKey.currentState!.validate()) {
+  //     setState(() {
+  //       formStateLoading = true;
+  //     });
+  //     String? accountStatus = await FirebaseServices.createAccount(
+  //         emailC.text, passwordC.text, nameC.text);
+  //     print('accoutStatus:$accountStatus');
+  //     if (accountStatus != null) {
+  //       setState(() {
+  //         formStateLoading = false;
+  //       });
+  //     } else {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (_) => SignIn(),
+  //           // OTPScreen(phoneC.text),
+  //         ),
+  //       );
+  //       // const SignIn()));
+  //     }
+  //   }
+  // }
 
   @override
   void initState() {
@@ -83,14 +81,8 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         decoration: PageDecoration.pageDecoration,
         padding: const EdgeInsets.symmetric(vertical: 120, horizontal: 60),
         child: SingleChildScrollView(
@@ -122,23 +114,6 @@ class _SignUpState extends State<SignUp> {
                   inputAction: TextInputAction.next,
                   border: const OutlineInputBorder(),
                 ),
-                // CustomTextFormField(
-                //   keyBoardType: TextInputType.phone,
-                //   validate: (v) {
-                //     if (v!.isEmpty) {
-                //       return "This section should not be empty";
-                //     }
-                //     return null;
-                //   },
-                //   hintText: 'Mobile',
-                //   prefix: const Padding(
-                //     padding: EdgeInsets.all(4),
-                //     child: Text('+92'),
-                //   ),
-                //   controller: phoneC,
-                //   inputAction: TextInputAction.next,
-                //   border: const OutlineInputBorder(),
-                // ),
                 CustomTextFormField(
                   validate: (v) {
                     if (v!.isEmpty || !v.contains('@')) {
@@ -168,40 +143,40 @@ class _SignUpState extends State<SignUp> {
                   obscureText: obsText,
                   border: const OutlineInputBorder(),
                 ),
-                const SizedBox(height: 10),
-                Stack(
-                  children: [
-                    CheckboxListTile(
-                      value: checkedValue,
-                      onChanged: (var newValue) {
-                        setState(() {
-                          checkedValue = newValue!;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity
-                          .leading, //  <-- leading Checkbox
-                    ),
-                    const Positioned(
-                      top: 22,
-                      left: 50,
-                      child: Text(
-                        "I agree with the Terms of Service & Privacy Policy",
-                        style: TextStyle(
-                          color: Colors.black38,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // const SizedBox(height: 10),
+                // Stack(
+                //   children: [
+                //     CheckboxListTile(
+                //       value: checkedValue,
+                //       onChanged: (var newValue) {
+                //         setState(() {
+                //           checkedValue = newValue!;
+                //         });
+                //       },
+                //       controlAffinity: ListTileControlAffinity
+                //           .leading, //  <-- leading Checkbox
+                //     ),
+                //     const Positioned(
+                //       top: 22,
+                //       left: 50,
+                //       child: Text(
+                //         "I agree with the Terms of Service & Privacy Policy",
+                //         style: TextStyle(
+                //           color: Colors.black38,
+                //           fontSize: 10,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 const SizedBox(height: 10),
                 Button(
                   // color: kInGreen,
                   buttonText: 'Sign Up',
                   width: 180.w,
-                  onPressed: () {
+                  onPressed: () async {
                     registerUser();
-                    submit();
+                    // submit();
                   },
                   isLoading: formStateLoading,
                   // isLoading: formStateLoading,
@@ -228,24 +203,54 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future registerUser() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user = await FirebaseAuth.instance.currentUser;
+    final userCollectionReference =
+    FirebaseFirestore.instance.collection('users');
 
+    final patientCollectionReference =
+    FirebaseFirestore.instance.collection('patients');
+    // Save the data to Firestore
     try {
-      await auth.createUserWithEmailAndPassword(
-          email: emailC.text, password: passwordC.text).then((signedInUser) =>
-      {
-        FirebaseFirestore.instance.collection("Users").doc(
-            signedInUser.user?.uid).set({
-          'userId': user?.uid,
-          'email': emailC.text,
-          'name': nameC.text,
-        })
+      final DocumentReference userDocumentReference =
+      await userCollectionReference.add({
+        'patientId': '', // Placeholder value for doctorId
+        'email': emailC.text,
+        'name': nameC.text,
+        'role': 'patient',
       });
-      print('New user registered');
+
+      // Set the document ID as the doctorId field value
+      await userDocumentReference.update({
+        'patientId': userDocumentReference.id,
+      });
+
+      // Create user in Firebase Authentication with the doctor's email and password
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: emailC.text,
+        password: passwordC.text,
+      );
+
+      // Add doctor data to the 'doctors' collection
+      await patientCollectionReference
+          .doc(userDocumentReference.id)
+          .set({
+        'email': emailC.text,
+        'name': nameC.text,
+        'role': 'patient',
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => SignIn(),
+          // OTPScreen(phoneC.text),
+        ),
+      );
+
+      print(
+          'Added a patient with ID: ${userDocumentReference.id}');
     } catch (e) {
-      print(e);
-      return e;
+      print('Failed to add patient: $e');
     }
   }
 }

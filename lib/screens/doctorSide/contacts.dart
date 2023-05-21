@@ -19,7 +19,7 @@ class _ContactsState extends State<Contacts> {
   late DocumentSnapshot<Map<String, dynamic>> userData;
 
   final CollectionReference usersCollection =
-  FirebaseFirestore.instance.collection('Users');
+  FirebaseFirestore.instance.collection('users'); // patients
 
   @override
   void initState() {
@@ -63,8 +63,8 @@ class _ContactsState extends State<Contacts> {
               // Create the current user instance
               final currentUser = AppUser(
                 id: currentUserId ?? '',
-                name: '',
-                avatarUrl: 'https://i.pravatar.cc/150?img=2',
+                name: 'sender',
+                avatarUrl: 'https://media.istockphoto.com/id/464628845/photo/womans-hand-pulling-envelop-from-mailbox.jpg?b=1&s=612x612&w=0&k=20&c=m051Ot-qEYxPxQhgfN6nP_LAitFowHXGq5I69nEcOvE=',
               );
 
               // Create the selected user instance

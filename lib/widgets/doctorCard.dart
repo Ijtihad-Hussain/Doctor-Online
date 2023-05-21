@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../screens/aboutDoctor/doctorProfilePage.dart';
 
-class DoctorCart extends StatelessWidget {
+class DoctorCard extends StatelessWidget {
   final String name;
   final String specialization;
   final String experience;
+  final String about;
+  final String email;
   final ImageProvider<Object> image;
 
-  DoctorCart({
+  DoctorCard({
     required this.name,
     required this.specialization,
     required this.experience,
+    required this.about,
+    required this.email,
     required this.image,
   });
 
@@ -27,6 +31,8 @@ class DoctorCart extends StatelessWidget {
               specialization: specialization,
               experience: experience,
               image: image,
+              about: about,
+              email: email,
             ),
           ),
         );

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -7,11 +8,7 @@ class Appointments extends StatefulWidget {
 }
 
 class _AppointmentsState extends State<Appointments> {
-  // List<Appointment> appointments = [
-  //   Appointment('John Doe', DateTime.now().add(Duration(days: 1))),
-  //   Appointment('Jane Smith', DateTime.now().add(Duration(days: 2))),
-  //   Appointment('Bob Johnson', DateTime.now().add(Duration(days: 3))),
-  // ]; // Add more appointments as needed  ];
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -19,40 +16,46 @@ class _AppointmentsState extends State<Appointments> {
       appBar: AppBar(
         title: Text('Appointments'),
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('appointments').snapshots(),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('appointments')
+            .where('doctorEmail', isEqualTo: currentUser?.email)
+            .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (BuildContext context, int index) {
-                DocumentSnapshot appointment = snapshot.data!.docs[index];
-                String name = appointment['name'];
-                String date = appointment['selectedDate'];
-                return Card(
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      child: Text(
-                        name[0],
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                    title: Text(name),
-                    subtitle: Text(date.toString()),
-                    onTap: () {
-                      // Navigate to appointment details page
-                    },
-                  ),
-                );
-              },
-            );
           }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No appointments found.'));
+          }
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (BuildContext context, int index) {
+              DocumentSnapshot appointment = snapshot.data!.docs[index];
+              String name = appointment['name'];
+              String date = appointment['selectedDate'];
+              return Card(
+                child: ListTile(
+                  leading: CircleAvatar(
+                    child: Text(
+                      name != null && name.isNotEmpty ? name[0] : '',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  title: Text(name ?? ''),
+                  subtitle: Text(date.toString()),
+                  onTap: () {
+                    // Navigate to appointment details page
+                  },
+                ),
+              );
+            },
+          );
         },
       ),
     );
   }
 }
+
 
 

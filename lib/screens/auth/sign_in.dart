@@ -6,9 +6,10 @@ import 'package:tele_consult/widgets/button.dart';
 import 'package:tele_consult/widgets/customTextFormField.dart';
 import 'package:tele_consult/widgets/pageDecoration.dart';
 
-import '../../utils/colors.dart';
-import '../../widgets/boxContainer.dart';
+import '../../services/authService.dart';
 import '../User/menu.dart';
+import '../doctorSide/doctorHome.dart';
+import '../home_screen.dart';
 import 'doctorSignIn.dart';
 
 class SignIn extends StatefulWidget {
@@ -68,6 +69,29 @@ class _SignInState extends State<SignIn> {
         Navigator.push(
             context, MaterialPageRoute(builder: (_) => Menu()));
       }
+    }
+  }
+
+  void login() async {
+    String email = emailC.text;
+    String password = passwordC.text;
+
+    AuthService authService = AuthService();
+    try {
+      CustomUser? user = await authService.signInWithEmailAndPassword(email, password);
+      if (user != null) {
+        // Redirect the user based on their role
+        if (user.role == 'patient') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        }
+      } else {
+        print('Failed to sign in. Invalid email or password.');
+      }
+    } catch (e) {
+      print('An error occurred during login: $e');
     }
   }
 
@@ -136,7 +160,7 @@ class _SignInState extends State<SignIn> {
                   buttonText: 'Sign In',
                   width: 180,
                   onPressed: () {
-                    submit();
+                    login();
                   },
                 ),
                 const SizedBox(height: 10),

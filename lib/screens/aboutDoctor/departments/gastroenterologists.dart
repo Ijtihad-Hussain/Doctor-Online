@@ -53,35 +53,32 @@ class _GastroenterologistsState extends State<Gastroenterologists> {
 
   List<Doctor> _doctors = [
     Doctor(
-      name: 'Dr. Zubair Khalid',
-      speciality: 'Gastroeterologist',
+      name: 'Dr Ahmed Faraz',
+      speciality: 'Cardiologist',
       experience: '7 years experience',
       availability: '12:00 PM tomorrow',
-      image: Image.asset(
-        'assets/images/ly1.png',
-        width: 80,
-      ),
+      imageUrl: 'https://example.com/doctor1.jpg', // Replace with the actual image URL
     ),
-    Doctor(
-      name: 'Dr. Kamran Khan',
-      speciality: 'Gastroenterologist',
-      experience: '10 years experience',
-      availability: '12:00 PM tomorrow',
-      image: Image.asset(
-        'assets/images/ly1.png',
-        width: 80,
-      ),
-    ),
-    Doctor(
-      name: 'Dr. Agha Khan',
-      speciality: 'Gastroeterologist',
-      experience: '12 years experience',
-      availability: '12:00 PM tomorrow',
-      image: Image.asset(
-        'assets/images/gy1.png',
-        width: 80,
-      ),
-    ),
+    // Doctor(
+    //   name: 'Dr. Kamran Khan',
+    //   speciality: 'Gastroenterologist',
+    //   experience: '10 years experience',
+    //   availability: '12:00 PM tomorrow',
+    //   image: Image.asset(
+    //     'assets/images/ly1.png',
+    //     width: 80,
+    //   ),
+    // ),
+    // Doctor(
+    //   name: 'Dr. Agha Khan',
+    //   speciality: 'Gastroeterologist',
+    //   experience: '12 years experience',
+    //   availability: '12:00 PM tomorrow',
+    //   image: Image.asset(
+    //     'assets/images/gy1.png',
+    //     width: 80,
+    //   ),
+    // ),
   ];
 
   List<Doctor> _searchDoctors(String query) {
@@ -133,11 +130,11 @@ class _GastroenterologistsState extends State<Gastroenterologists> {
                       MaterialPageRoute(builder: (context) => DoctorDetails()),
                     );
                   },
-                  child: DoctorCart(
+                  child: DoctorCard(
                     name: doctor.name,
                     specialization: doctor.speciality,
                     experience: doctor.experience!,
-                    image: AssetImage('assets/images/doctorm.jpg'),
+                    image: AssetImage('assets/images/doctorm.jpg'), about: '', email: '',
                   ),
                 ),
               ),

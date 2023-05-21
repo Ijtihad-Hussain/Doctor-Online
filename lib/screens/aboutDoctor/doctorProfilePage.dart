@@ -6,11 +6,14 @@ import '../../widgets/customTextFormField.dart';
 import 'appointmentNext.dart';
 
 String? DoctorName;
+String? doctorEmail;
 
 class DoctorProfilePage extends StatefulWidget {
   final String doctorName;
   final String specialization;
   final String experience;
+  final String about;
+  final String email;
   final ImageProvider<Object> image;
 
   const DoctorProfilePage({
@@ -18,6 +21,8 @@ class DoctorProfilePage extends StatefulWidget {
     required this.doctorName,
     required this.specialization,
     required this.experience,
+    required this.about,
+    required this.email,
     required this.image,
   }) : super(key: key);
 
@@ -33,6 +38,7 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
     // TODO: implement initState
     super.initState();
     DoctorName = widget.doctorName;
+    doctorEmail = widget.email;
   }
 
   @override
@@ -138,7 +144,8 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
+                  Text(
+                    widget.about ??
                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus efficitur nisi quam, eu sollicitudin enim dictum in. Pellentesque ac congue justo. Etiam porta, mi ut dignissim pretium, magna metus interdum magna, eu bibendum ex mauris non nulla. Praesent consectetur ac lacus quis blandit. Morbi bibendum efficitur tellus, vel suscipit lorem facilisis ut. In laoreet urna vel sapien faucibus, quis finibus quam accumsan. Sed quis urna sagittis, gravida urna et, vehicula velit. Vestibulum nec metus at sapien congue sagittis id quis ipsum. Proin in neque vitae urna hendrerit faucibus. Duis fringilla turpis at purus sollicitudin, vel sagittis mi vestibulum. Nulla sollicitudin arcu libero, a consequat tellus egestas vel.',
                     style: TextStyle(
                       fontSize: 16,
@@ -163,71 +170,105 @@ Widget _patientDetailsDialog(BuildContext context) {
   final TextEditingController mobileNumberController = TextEditingController();
 
   return AlertDialog(
-    title: const Text('Enter Details'),
+    title: Text(
+      'Patient Details',
+      style: TextStyle(fontWeight: FontWeight.bold),
+    ),
     content: Container(
       height: 320.h,
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Text(
-                'Patient Name',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+            Text(
+              'Name',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            CustomTextFormField(
-              width: 220,
-              height: 40,
-              hintText: 'Name',
-              color: Colors.grey,
-              isTextAlignCenter: true,
+            SizedBox(height: 8),
+            TextFormField(
+              keyboardType: TextInputType.name,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey,
+                hintText: 'Name',
+              ),
+              style: TextStyle(fontSize: 16),
               controller: nameController,
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 12),
-              child: Text(
-                'Patient Age',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+            SizedBox(height: 12),
+            Text(
+              'Age',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            CustomTextFormField(
+            SizedBox(height: 8),
+            Container(
               width: 220,
               height: 40,
-              hintText: 'Age',
-              color: Colors.grey,
-              isTextAlignCenter: true,
-              controller: ageController,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 12),
-              child: Text(
-                'Patient Gender',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              child: TextFormField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.grey,
+                  hintText: 'Age',
+                ),
+                style: TextStyle(fontSize: 16),
+                controller: ageController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your age';
+                  }
+                  int? age = int.tryParse(value);
+                  if (age == null || age <= 0) {
+                    return 'Invalid age';
+                  }
+                  return null;
+                },
               ),
             ),
-
-            CustomTextFormField(
-              width: 220,
-              height: 40,
-              hintText: 'Gender',
-              color: Colors.grey,
-              isTextAlignCenter: true,
-              controller: genderController,
+            SizedBox(height: 12),
+            Text(
+              'Gender',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 12),
-              child: Text(
-                'Mobile Number',
-                style: TextStyle(fontWeight: FontWeight.bold),
+            SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: genderController.text.isEmpty ? null : genderController.text,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey,
+                hintText: 'Select Gender',
               ),
+              items: [
+                DropdownMenuItem<String>(
+                  value: 'Male',
+                  child: Text('Male'),
+                ),
+                DropdownMenuItem<String>(
+                  value: 'Female',
+                  child: Text('Female'),
+                ),
+                DropdownMenuItem<String>(
+                  value: 'Other',
+                  child: Text('Other'),
+                ),
+              ],
+              onChanged: (value) {
+                genderController.text = value!;
+              },
             ),
-            CustomTextFormField(
-              width: 220,
-              height: 40,
-              hintText: '+17281787237',
-              color: Colors.grey,
-              isTextAlignCenter: true,
+            SizedBox(height: 12),
+            Text(
+              'Mobile Number',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            TextFormField(
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey,
+                hintText: '+17281787237',
+              ),
               controller: mobileNumberController,
             ),
           ],
@@ -245,13 +286,16 @@ Widget _patientDetailsDialog(BuildContext context) {
 
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AppointmentNext(
-              name: name,
-              age: age,
-              gender: gender,
-              mobileNumber: mobileNumber,
-              doctorName: DoctorName!,
-            )),
+            MaterialPageRoute(
+              builder: (context) => AppointmentNext(
+                name: name,
+                age: age,
+                gender: gender,
+                mobileNumber: mobileNumber,
+                doctorName: DoctorName!,
+                doctorEmail: doctorEmail!,
+              ),
+            ),
           );
         },
       ),

@@ -17,12 +17,15 @@ class AppointmentNext extends StatefulWidget {
   final String gender;
   final String mobileNumber;
   final String doctorName;
+  final String doctorEmail;
 
   const AppointmentNext({
     required this.name,
     required this.age,
     required this.gender,
-    required this.mobileNumber, required this.doctorName,
+    required this.mobileNumber,
+    required this.doctorName,
+    required this.doctorEmail,
   });
 
   @override
@@ -255,6 +258,7 @@ class _AppointmentNextState extends State<AppointmentNext> {
                 String gender = widget.gender;
                 String mobileNumber = widget.mobileNumber;
                 String doctorName = widget.doctorName;
+                String doctorEmail = widget.doctorEmail;
                 String selectedTime = _selectedTime ?? '';
                 String selectedDate = '${myDay(_selectedTimeIndex)}, ${myMonth(_selectedTimeIndex)} ${myDate(_selectedTimeIndex)}';
 
@@ -269,6 +273,7 @@ class _AppointmentNextState extends State<AppointmentNext> {
                     'gender': gender,
                     'mobileNumber': mobileNumber,
                     'doctorName': doctorName,
+                    'doctorEmail': doctorEmail,
                     'selectedTime': selectedTime,
                     'selectedDate': selectedDate,
                     'selectedAlarmTime': _selectedAlarmTime,

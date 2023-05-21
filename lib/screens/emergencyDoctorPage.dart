@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tele_consult/screens/User/paymentPage.dart';
 import 'package:tele_consult/widgets/button.dart';
 
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class EmergencyDoctorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -11,57 +14,64 @@ class EmergencyDoctorPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Our online doctors are available for emergency calls 24/7. Please select a doctor to start the call:',
-              style: TextStyle(fontSize: 18.0),
-            ),
-            SizedBox(height: 16.0),
-            DoctorCard(
-              name: 'Dr. John Smith',
-              specialty: 'Emergency Medicine',
-              imageUrl: 'https://i.pravatar.cc/150?img=4',
-              onTap: () {
-                // Add logic to initiate the call
-              },
-            ),
-            DoctorCard(
-              name: 'Dr. Jane Doe',
-              specialty: 'Internal Medicine',
-              imageUrl: 'https://i.pravatar.cc/150?img=2',
-              onTap: () {
-                // Add logic to initiate the call
-              },
-            ),
-            DoctorCard(
-              name: 'Dr. Sarah Johnson',
-              specialty: 'Pediatrics',
-              imageUrl: 'https://i.pravatar.cc/150?img=5',
-              onTap: () {
-                // Add logic to initiate the call
-              },
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Our online doctors are available for emergency calls 24/7. Please select a doctor to start the call:',
+                style: TextStyle(fontSize: 18.0),
+              ),
+              SizedBox(height: 16.0),
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('doctors')
+                    .where('status', isEqualTo: 'online')
+                    .snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+
+                  return Column(
+                    children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                      final doctorData = document.data() as Map<String, dynamic>;
+                      return DoctorCardEmergency(
+                        name: doctorData['name'],
+                        specialty: doctorData['speciality'],
+                        imageUrl: doctorData['imageUrl'],
+                        onTap: () {
+                          // Add logic to initiate the call
+                        },
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class DoctorCard extends StatelessWidget {
-  final String name;
-  final String specialty;
-  final String imageUrl;
-  final VoidCallback onTap;
+class DoctorCardEmergency extends StatelessWidget {
+  final String? name;
+  final String? specialty;
+  final String? imageUrl;
+  final VoidCallback? onTap;
 
-  const DoctorCard({
+  const DoctorCardEmergency({
     Key? key,
-    required this.name,
-    required this.specialty,
-    required this.imageUrl,
-    required this.onTap,
+    this.name,
+    this.specialty,
+    this.imageUrl,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -75,7 +85,7 @@ class DoctorCard extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
                 radius: 30.0,
-                backgroundImage: NetworkImage(imageUrl),
+                backgroundImage: NetworkImage(imageUrl!),
               ),
             ),
             Expanded(
@@ -85,14 +95,14 @@ class DoctorCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name,
+                      name!,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18.0,
                       ),
                     ),
                     SizedBox(height: 8.0),
-                    Text(specialty),
+                    Text(specialty!),
                   ],
                 ),
               ),
@@ -102,14 +112,14 @@ class DoctorCard extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => PaymentPage()),
+                  MaterialPageRoute(builder: (context) => PaymentPage()),
                 );
               },
-              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+

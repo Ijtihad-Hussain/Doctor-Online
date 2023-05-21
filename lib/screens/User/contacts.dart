@@ -1,16 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tele_consult/models/user.dart';
-import 'package:tele_consult/screens/Chat/messagingScreen.dart';
-import 'package:tele_consult/widgets/contactBox.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-class Contacts extends StatefulWidget {
-  const Contacts({Key? key}) : super(key: key);
-
-  @override
-  State<Contacts> createState() => _ContactsState();
-}
+import '../../models/user.dart';
+import '../../widgets/contactBox.dart';
+import '../doctorSide/chat/chatScreen.dart';
+import '../doctorSide/contacts.dart';
 
 class _ContactsState extends State<Contacts> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -50,8 +48,7 @@ class _ContactsState extends State<Contacts> {
           return ListView.builder(
             itemCount: doctors.length,
             itemBuilder: (context, index) {
-              final doctor =
-              doctors[index].data() as Map<String, dynamic>;
+              final doctor = doctors[index].data() as Map<String, dynamic>;
               final name = doctor['name'] ?? '';
               final email = doctor['email'] ?? '';
               final userId = doctor['userId'] ?? '';
@@ -64,8 +61,8 @@ class _ContactsState extends State<Contacts> {
               // Create the current user instance
               final currentUser = AppUser(
                 id: currentUserId ?? '',
-                name: '',
-                avatarUrl: 'https://i.pravatar.cc/150?img=2',
+                name: 'sender',
+                avatarUrl: 'https://media.istockphoto.com/id/464628845/photo/womans-hand-pulling-envelop-from-mailbox.jpg?b=1&s=612x612&w=0&k=20&c=m051Ot-qEYxPxQhgfN6nP_LAitFowHXGq5I69nEcOvE=',
               );
 
               // Create the selected user instance
@@ -80,7 +77,7 @@ class _ContactsState extends State<Contacts> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MessagingScreen(
+                      builder: (context) => ChatScreen(
                         currentUser: currentUser,
                         selectedUser: selectedUser,
                       ),

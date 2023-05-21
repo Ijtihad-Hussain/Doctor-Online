@@ -8,11 +8,11 @@ class DoctorCardVertical extends StatelessWidget {
   double? height;
   double? width;
   String? name;
-  String? belowName;
+  String? specialization;
   String? doctorpicture;
 
   DoctorCardVertical(
-      {this.height, this.width, this.name, this.belowName, this.doctorpicture});
+      {this.height, this.width, this.name, this.specialization, this.doctorpicture});
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +27,11 @@ class DoctorCardVertical extends StatelessWidget {
         children: [
           Column(
             children: [
-                  Image.asset(
-                    doctorpicture ?? 'assets/images/cheerful-doctor.jpg',
-                    height: height ?? 100,
-                    width: width ?? 120,
-                  ),
+              DoctorImageWidget(
+                doctorPicture: doctorpicture ?? 'https://example.com/doctor-profile-picture.jpg',
+                height: 100,
+                width: 120,
+              ),
             ],
           ),
           Expanded(
@@ -52,7 +52,7 @@ class DoctorCardVertical extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(2.0),
                   child: Text(
-                    belowName ?? 'Specialization',
+                    specialization ?? 'Specialization',
                     textAlign: TextAlign.right,
                     style: const TextStyle(
                       color: Colors.white60,
@@ -63,7 +63,7 @@ class DoctorCardVertical extends StatelessWidget {
                 ),
                 RatingBar.builder(
                   itemSize: 10,
-                  initialRating: 3,
+                  initialRating: 4.7,
                   minRating: 1,
                   direction: Axis.horizontal,
                   allowHalfRating: true,
@@ -82,6 +82,42 @@ class DoctorCardVertical extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+
+class DoctorImageWidget extends StatelessWidget {
+  final String? doctorPicture;
+  final double height;
+  final double width;
+
+  DoctorImageWidget({
+    this.doctorPicture,
+    this.height = 100,
+    this.width = 120,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Widget imageWidget;
+
+    if (doctorPicture != null && (doctorPicture!.startsWith('http') || doctorPicture!.startsWith('https'))) {
+      imageWidget = Image.network(
+        doctorPicture!,
+        height: height,
+        width: width,
+      );
+    } else {
+      imageWidget = Image.asset(
+        doctorPicture ?? 'assets/images/cheerful-doctor.jpg',
+        height: height,
+        width: width,
+      );
+    }
+
+    return Container(
+      child: imageWidget,
     );
   }
 }

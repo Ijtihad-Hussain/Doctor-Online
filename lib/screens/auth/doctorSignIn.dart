@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tele_consult/screens/auth/sign_in.dart';
+import 'package:tele_consult/screens/home_screen.dart';
+import '../../services/authService.dart';
 import '../../services/firebase_services.dart';
 import '../../widgets/button.dart';
 import '../../widgets/customTextFormField.dart';
@@ -76,8 +80,7 @@ class _DoctorSignInState extends State<DoctorSignIn> {
 
       // Retrieve the user document from Firestore
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('doctors')
-          .doc()
+          .collection('users').doc(emailC.text)
           .get();
 
       // Check if the user exists and has the 'doctor' role
@@ -85,6 +88,8 @@ class _DoctorSignInState extends State<DoctorSignIn> {
         String? accountstatus =
         await FirebaseServices.signInAccount(
             emailC.text, passwordC.text);
+
+        print(accountstatus);
 
         if (accountstatus != null) {
           ecoDialogue(accountstatus);
@@ -101,6 +106,29 @@ class _DoctorSignInState extends State<DoctorSignIn> {
           formStateLoading = false;
         });
       }
+    }
+  }
+
+  void login() async {
+    String email = emailC.text;
+    String password = passwordC.text;
+
+    AuthService authService = AuthService();
+    try {
+      CustomUser? user = await authService.signInWithEmailAndPassword(email, password);
+      if (user != null) {
+        // Redirect the user based on their role
+        if (user.role == 'doctor') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DoctorHome()),
+          );
+        }
+      } else {
+        print('Failed to sign in. Invalid email or password.');
+      }
+    } catch (e) {
+      print('An error occurred during login: $e');
     }
   }
 
@@ -169,7 +197,8 @@ class _DoctorSignInState extends State<DoctorSignIn> {
                   buttonText: 'Sign In',
                   width: 180,
                   onPressed: () {
-                    submit();
+                    login();
+                    // submit();
                   },
                 ),
                 const SizedBox(height: 10),
@@ -183,6 +212,20 @@ class _DoctorSignInState extends State<DoctorSignIn> {
                   },
                   child: const Text(
                     'Forgot password',
+                    style: TextStyle(color: Colors.black38),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SignIn()),
+                    );
+                  },
+                  child: const Text(
+                    'Sign In as Patient',
                     style: TextStyle(color: Colors.black38),
                   ),
                 ),

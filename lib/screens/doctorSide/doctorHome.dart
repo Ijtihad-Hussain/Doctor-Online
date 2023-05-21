@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tele_consult/screens/doctorSide/doctorMenu.dart';
 import 'package:tele_consult/utils/colors.dart';
@@ -11,8 +12,61 @@ import 'contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DoctorHome extends StatelessWidget {
+class DoctorHome extends StatefulWidget {
   const DoctorHome({Key? key}) : super(key: key);
+
+  @override
+  State<DoctorHome> createState() => _DoctorHomeState();
+}
+
+class _DoctorHomeState extends State<DoctorHome> {
+
+  bool _isOnline = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch initial status from Firestore
+    _fetchDoctorStatus();
+  }
+
+  void _fetchDoctorStatus() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final userId = currentUser.uid;
+      final userDoc = FirebaseFirestore.instance.collection('doctors').doc(userId);
+      final userSnapshot = await userDoc.get();
+      final status = userSnapshot.data()?['status'];
+      setState(() {
+        _isOnline = status == 'online';
+      });
+    }
+  }
+
+  void _toggleStatus() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    print(currentUser?.email);
+    if (currentUser != null) {
+      final email = currentUser.email;
+      print(email);
+      final newStatus = _isOnline ? 'offline' : 'online';
+      final userDoc = FirebaseFirestore.instance.collection('doctors').where('email', isEqualTo: email);
+
+      print('Before update - Current status: ${_isOnline ? 'Online' : 'Offline'}');
+
+      final querySnapshot = await userDoc.get();
+      if (querySnapshot.docs.isNotEmpty) {
+        final doctorDoc = querySnapshot.docs.first.reference;
+        await doctorDoc.update({'status': newStatus});
+        setState(() {
+          _isOnline = !_isOnline;
+        });
+        print('After update - New status: ${_isOnline ? 'Online' : 'Offline'}');
+      } else {
+        print('Doctor document not found');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +78,9 @@ class DoctorHome extends StatelessWidget {
         title: const Center(child: Text('Welcome Doctor')),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.notifications_sharp),
-            tooltip: 'Notification Icon',
-            onPressed: () {},
-          ), //IconButton
+            onPressed: _toggleStatus,
+            icon: Icon(_isOnline ? Icons.visibility : Icons.visibility_off),
+          ),
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: CircleAvatar(
