@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_builder/calendar_builder.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tele_consult/screens/User/paymentPage.dart';
 import 'package:tele_consult/screens/aboutDoctor/thankYouScreen.dart';
@@ -10,6 +15,7 @@ import '../../widgets/button.dart';
 import '../../widgets/pageDecoration.dart';
 import '../../widgets/timeCard.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class AppointmentNext extends StatefulWidget {
   final String name;
@@ -35,16 +41,9 @@ class AppointmentNext extends StatefulWidget {
 class _AppointmentNextState extends State<AppointmentNext> {
 
   String _selectedAlarmTime = '';
-
-  void _handleSelectTime(String time) {
-    setState(() {
-      _selectedAlarmTime = time;
-    });
-  }
-
   int _selectedTimeIndex = 0;
-
   String? _selectedTime;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   void _selectCard(int index) {
     setState(() {
@@ -83,6 +82,53 @@ class _AppointmentNextState extends State<AppointmentNext> {
         ),
       );
     }).toList();
+  }
+
+  Future<void> _sendNotificationToDevices(List<String> tokens, Map<String, dynamic> notification) async {
+    // Replace this with your actual implementation to send notifications
+    // to the subscribed devices
+    final String serverKey = 'AAAAPKN35kI:APA91bEchwPCmMtmD72eP2VD8GH-b1ht0CNTb2joz8z35LPCsN9vqrG9XyS2GTpClP_19ryn8SHYzLLnS46S4_L9GhQBGRehlZcGnTq-qPHy7G6lsub1vK_KEUlQ3R11Ao0x3wbH-8er';
+    final String fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+
+    final Map<String, dynamic> data = {
+      'notification': {
+        'title': notification['title'],
+        'body': notification['body'],
+      },
+      'data': notification['data'],
+      'registration_ids': tokens,
+    };
+
+    final String jsonData = jsonEncode(data);
+
+    final http.Response response = await http.post(
+      Uri.parse(fcmUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverKey',
+      },
+      body: jsonData,
+    );
+
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification');
+    }
+  }
+
+  Future<String?> _getSubscribedDevicesTokens() async {
+    // Replace this with your actual implementation to fetch device tokens
+    // of subscribed devices
+    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+    final String? tokens = await firebaseMessaging.getToken();
+    print(tokens);
+    return tokens;
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -259,6 +305,7 @@ class _AppointmentNextState extends State<AppointmentNext> {
                 String mobileNumber = widget.mobileNumber;
                 String doctorName = widget.doctorName;
                 String doctorEmail = widget.doctorEmail;
+                String? userEmail = FirebaseAuth.instance.currentUser?.email;
                 String selectedTime = _selectedTime ?? '';
                 String selectedDate = '${myDay(_selectedTimeIndex)}, ${myMonth(_selectedTimeIndex)} ${myDate(_selectedTimeIndex)}';
 
@@ -271,6 +318,7 @@ class _AppointmentNextState extends State<AppointmentNext> {
                     'name': name,
                     'age': age,
                     'gender': gender,
+                    'userEmail': userEmail,
                     'mobileNumber': mobileNumber,
                     'doctorName': doctorName,
                     'doctorEmail': doctorEmail,
@@ -280,6 +328,16 @@ class _AppointmentNextState extends State<AppointmentNext> {
                   });
 
                   print('Appointment added to Firestore');
+
+                  // Send notification to subscribed devices
+                  String? tokens = await _getSubscribedDevicesTokens();
+                  await _sendNotificationToDevices([tokens!], {
+                    'title': 'New Appointment',
+                    'body': 'You have a new appointment with $doctorName on $selectedDate at $selectedTime.',
+                    'data': {
+                      'appointmentId': 'your_appointment_id', // Replace with the actual appointment ID if needed
+                    },
+                  });
                 } catch (e) {
                   print('Failed to add appointment: $e');
                 }

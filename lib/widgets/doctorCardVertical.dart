@@ -61,22 +61,22 @@ class DoctorCardVertical extends StatelessWidget {
                     ),
                   ),
                 ),
-                RatingBar.builder(
-                  itemSize: 10,
-                  initialRating: 4.7,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  allowHalfRating: true,
-                  itemCount: 5,
-                  itemPadding: const EdgeInsets.symmetric(horizontal: 2.0),
-                  itemBuilder: (context, _) => const Icon(
-                    Icons.star,
-                    color: Colors.amber,
+                IgnorePointer(
+                  child: RatingBar.builder(
+                    itemSize: 10,
+                    initialRating: 4.7,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 2.0),
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    onRatingUpdate: (rating) {},
                   ),
-                  onRatingUpdate: (rating) {
-
-                  },
-                ),
+                )
               ],
             ),
           ),

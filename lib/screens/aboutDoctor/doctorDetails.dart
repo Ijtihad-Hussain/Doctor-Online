@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tele_consult/screens/aboutDoctor/appointment.dart';
 import 'package:tele_consult/utils/customTextStyles.dart';
 import 'package:tele_consult/widgets/doctorCardHorizontal.dart';
 

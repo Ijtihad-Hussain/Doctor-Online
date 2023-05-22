@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tele_consult/screens/aboutDoctor/appointment.dart';
 import 'package:tele_consult/screens/auth/sign_in.dart';
 import 'package:tele_consult/screens/helpCenter.dart';
 import 'package:tele_consult/screens/privacyPolicy.dart';
@@ -42,10 +41,10 @@ class MainMenu extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10, right: 120),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Appointment()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => Appointment()),
+                    // );
                   },
                   child: BoxContainer(
                     text: 'Appointments',

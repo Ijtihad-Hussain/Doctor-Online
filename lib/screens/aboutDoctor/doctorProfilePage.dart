@@ -194,6 +194,12 @@ Widget _patientDetailsDialog(BuildContext context) {
               ),
               style: TextStyle(fontSize: 16),
               controller: nameController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your name';
+                }
+                return null;
+              },
             ),
             SizedBox(height: 12),
             Text(
@@ -231,30 +237,40 @@ Widget _patientDetailsDialog(BuildContext context) {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              value: genderController.text.isEmpty ? null : genderController.text,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey,
-                hintText: 'Select Gender',
+            Container(
+              width: 220,
+              height: 40,
+              child: DropdownButtonFormField<String>(
+                value: genderController.text.isEmpty ? null : genderController.text,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.grey,
+                  hintText: 'Select Gender',
+                ),
+                items: [
+                  DropdownMenuItem<String>(
+                    value: 'Male',
+                    child: Text('Male'),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'Female',
+                    child: Text('Female'),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'Other',
+                    child: Text('Other'),
+                  ),
+                ],
+                onChanged: (value) {
+                  genderController.text = value!;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select your gender';
+                  }
+                  return null;
+                },
               ),
-              items: [
-                DropdownMenuItem<String>(
-                  value: 'Male',
-                  child: Text('Male'),
-                ),
-                DropdownMenuItem<String>(
-                  value: 'Female',
-                  child: Text('Female'),
-                ),
-                DropdownMenuItem<String>(
-                  value: 'Other',
-                  child: Text('Other'),
-                ),
-              ],
-              onChanged: (value) {
-                genderController.text = value!;
-              },
             ),
             SizedBox(height: 12),
             Text(
@@ -262,14 +278,24 @@ Widget _patientDetailsDialog(BuildContext context) {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            TextFormField(
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey,
-                hintText: '+17281787237',
+            Container(
+              width: 220,
+              height: 40,
+              child: TextFormField(
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.grey,
+                  hintText: '+17281787237',
+                ),
+                controller: mobileNumberController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your mobile number';
+                  }
+                  return null;
+                },
               ),
-              controller: mobileNumberController,
             ),
           ],
         ),

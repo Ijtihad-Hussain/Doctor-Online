@@ -197,7 +197,31 @@ class _SignInState extends State<SignIn> {
                       MaterialPageRoute(builder: (context) => DoctorSignIn()),
                     );
                   },
-                  child: Center(child: Text('Are you a doctor')),
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => DoctorSignIn()),
+                          );
+                        },
+                        child: Text(
+                          'Are you a doctor?',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
                 ),
               ],
             ),

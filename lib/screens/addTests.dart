@@ -4,7 +4,6 @@ import 'package:tele_consult/screens/diagnosticTests.dart';
 import '../utils/colors.dart';
 import '../widgets/button.dart';
 import '../widgets/pageDecoration.dart';
-import 'aboutDoctor/appointment.dart';
 import 'home_screen.dart';
 
 class AddTests extends StatelessWidget {

@@ -1,14 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../../../models/doctor.dart';
-import '../../../widgets/button.dart';
 import '../../../widgets/customTextFormField.dart';
-import '../../../widgets/doctorBookCard.dart';
 import '../../../widgets/doctorCard.dart';
 import '../../../widgets/pageDecoration.dart';
-import '../appointmentNext.dart';
-import '../doctorDetails.dart';
 
 class Cardiologists extends StatefulWidget {
   const Cardiologists({Key? key}) : super(key: key);
@@ -43,12 +38,8 @@ class _CardiologistsState extends State<Cardiologists> {
           speciality: documentSnapshot.get('speciality'),
           experience: '7 years',
           about: documentSnapshot.get('about'),
-          // documentSnapshot.get('experience'),
           availability: 'availaibity',
-          // documentSnapshot.get('availability'),
-          imageUrl:
-          // 'https://images.pexels.com/photos/2280568/pexels-photo-2280568.jpeg?auto=compress&cs=tinysrgb&w=600'
-          documentSnapshot.get('imageUrl'), // Retrieve the image URL from Firestore
+          imageUrl: documentSnapshot.get('imageUrl'), // Retrieve the image URL from Firestore
         );
       }).toList();
     });

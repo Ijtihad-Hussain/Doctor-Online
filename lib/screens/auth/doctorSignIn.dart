@@ -226,7 +226,13 @@ class _DoctorSignInState extends State<DoctorSignIn> {
                   },
                   child: const Text(
                     'Sign In as Patient',
-                    style: TextStyle(color: Colors.black38),
+                    style: TextStyle(
+                      color: Colors.black38,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                      fontFamily: 'Roboto',
+                    ),
                   ),
                 ),
               ],

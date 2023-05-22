@@ -1,13 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../../../models/doctor.dart';
-import '../../../widgets/button.dart';
 import '../../../widgets/customTextFormField.dart';
-import '../../../widgets/doctorBookCard.dart';
 import '../../../widgets/doctorCard.dart';
 import '../../../widgets/pageDecoration.dart';
-import '../appointmentNext.dart';
-import '../doctorDetails.dart';
 
 class Gastroenterologists extends StatefulWidget {
   const Gastroenterologists({Key? key}) : super(key: key);
@@ -18,68 +14,8 @@ class Gastroenterologists extends StatefulWidget {
 
 class _GastroenterologistsState extends State<Gastroenterologists> {
   final TextEditingController _searchController = TextEditingController();
-  String? selectedGender;
 
-  Widget buildGenderDropdown() {
-    return DropdownButtonFormField<String>(
-      value: selectedGender,
-      decoration: InputDecoration(
-        hintText: 'Gender',
-        hintStyle: TextStyle(color: Colors.grey),
-        filled: true,
-        fillColor: Colors.white,
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      onChanged: (value) {
-        setState(() {
-          selectedGender = value;
-        });
-      },
-      items: ['Male', 'Female', 'Other']
-          .map((gender) => DropdownMenuItem<String>(
-        value: gender,
-        child: Text(gender),
-      ))
-          .toList(),
-    );
-  }
-
-  List<Doctor> _doctors = [
-    Doctor(
-      name: 'Dr Ahmed Faraz',
-      speciality: 'Cardiologist',
-      experience: '7 years experience',
-      availability: '12:00 PM tomorrow',
-      imageUrl: 'https://example.com/doctor1.jpg', // Replace with the actual image URL
-    ),
-    // Doctor(
-    //   name: 'Dr. Kamran Khan',
-    //   speciality: 'Gastroenterologist',
-    //   experience: '10 years experience',
-    //   availability: '12:00 PM tomorrow',
-    //   image: Image.asset(
-    //     'assets/images/ly1.png',
-    //     width: 80,
-    //   ),
-    // ),
-    // Doctor(
-    //   name: 'Dr. Agha Khan',
-    //   speciality: 'Gastroeterologist',
-    //   experience: '12 years experience',
-    //   availability: '12:00 PM tomorrow',
-    //   image: Image.asset(
-    //     'assets/images/gy1.png',
-    //     width: 80,
-    //   ),
-    // ),
-  ];
+  List<Doctor> _doctors = [];
 
   List<Doctor> _searchDoctors(String query) {
     return _doctors.where((doctor) {
@@ -89,6 +25,33 @@ class _GastroenterologistsState extends State<Gastroenterologists> {
     }).toList();
   }
 
+  Stream<List<Doctor>> _fetchDoctors() {
+    return FirebaseFirestore.instance
+        .collection('doctors')
+        .where('speciality', isEqualTo: 'Gastroenterologist')
+        .snapshots()
+        .map((QuerySnapshot querySnapshot) {
+      return querySnapshot.docs.map((DocumentSnapshot documentSnapshot) {
+        return Doctor(
+          name: documentSnapshot.get('name'),
+          email: documentSnapshot.get('email'),
+          speciality: documentSnapshot.get('speciality'),
+          experience: '7 years',
+          about: documentSnapshot.get('about'),
+          availability: 'availaibity',
+          imageUrl: documentSnapshot.get('imageUrl'), // Retrieve the image URL from Firestore
+        );
+      }).toList();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // _doctors = _fetchDoctors();
+  }
+
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -97,51 +60,74 @@ class _GastroenterologistsState extends State<Gastroenterologists> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: PageDecoration.pageDecoration,
-        padding: const EdgeInsets.only(top: 40),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CustomTextFormField(
-                hintText: 'Search Doctor',
-                height: 44,
-                keyBoardType: TextInputType.text,
-                controller: _searchController,
-                onChanged: (value) {
-                  setState(() {
-                    _doctors = _searchDoctors(value);
-                  });
-                },
-              ),
-              const SizedBox(
-                height: 18,
-              ),
-              // Map the filtered doctors list to DoctorBookCard widgets
-              ..._doctors.map(
-                    (doctor) => GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DoctorDetails()),
-                    );
-                  },
-                  child: DoctorCard(
-                    name: doctor.name,
-                    specialization: doctor.speciality,
-                    experience: doctor.experience!,
-                    image: AssetImage('assets/images/doctorm.jpg'), about: '', email: '',
-                  ),
+    return StreamBuilder<List<Doctor>>(
+        stream: _fetchDoctors(),
+        builder: (BuildContext context, AsyncSnapshot<List<Doctor>> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+
+          List<Doctor> doctors = snapshot.data ?? [];
+          return Scaffold(
+            extendBodyBehindAppBar: true,
+            body: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              decoration: PageDecoration.pageDecoration,
+              padding: const EdgeInsets.only(top: 40),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CustomTextFormField(
+                      hintText: 'Search Doctor',
+                      height: 44,
+                      keyBoardType: TextInputType.text,
+                      controller: _searchController,
+                      onChanged: (value) {
+                        setState(() {
+                          _doctors = _searchDoctors(value);
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      height: 18,
+                    ),
+                    StreamBuilder<List<Doctor>>(
+                      stream: _fetchDoctors(),
+                      builder: (BuildContext context, AsyncSnapshot<List<Doctor>> snapshot) {
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        }
+
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        }
+
+                        List<Doctor> doctors = snapshot.data ?? [];
+
+                        return Column(
+                          children: doctors.map((doctor) => DoctorCard(
+                            name: doctor.name,
+                            specialization: doctor.speciality,
+                            experience: doctor.experience!,
+                            about: doctor.about!,
+                            email: doctor.email!,
+                            image: NetworkImage(doctor.imageUrl!), // Use NetworkImage to load the image from the URL
+                          )).toList(),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        }
     );
   }
 }
+

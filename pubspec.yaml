@@ -34,6 +34,10 @@ dependencies:
   zego_uikit_prebuilt_call: ^3.3.13
   firebase_messaging: ^14.6.0
   firebase_storage: ^11.2.1
+  flutter_riverpod: ^2.3.6
+  flutter_local_notifications: ^14.1.0
+  http:
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   flutter_test:

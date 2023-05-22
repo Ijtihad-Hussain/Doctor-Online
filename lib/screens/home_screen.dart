@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tele_consult/screens/User/contacts.dart';
 import 'package:tele_consult/screens/User/myAppointmentsScreen.dart';
@@ -76,52 +77,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   @override
   void initState() {
     super.initState();
-    _configureFirebaseMessaging();
-  }
-
-  void _configureFirebaseMessaging() {
-    _firebaseMessaging.requestPermission();
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // Handle incoming messages when the app is in the foreground
-      print("Received message: ${message.notification?.title}");
-      // Display an in-app notification or update the UI accordingly
-
-      // Check if the message is about a new appointment booking
-      if (message.data.containsKey('type') &&
-          message.data['type'] == 'new_appointment') {
-        // Handle the new appointment notification
-        String appointmentId = message.data['appointmentId'];
-        String patientName = message.data['patientName'];
-        String appointmentTime = message.data['appointmentTime'];
-
-        // Display a specific notification or update the UI for new appointment bookings
-        // You can also navigate to a relevant screen to show the details of the new appointment
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // Handle notification taps when the app is in the background or terminated
-      print("Opened app from notification: ${message.notification?.title}");
-      // Navigate to the relevant screen or update the UI as needed
-
-      // Check if the message is about an appointment reminder
-      if (message.data.containsKey('type') &&
-          message.data['type'] == 'appointment_reminder') {
-        // Handle the appointment reminder notification
-        String appointmentId = message.data['appointmentId'];
-        String patientName = message.data['patientName'];
-        String appointmentTime = message.data['appointmentTime'];
-
-        // Display a specific notification or update the UI for appointment reminders
-        // You can also navigate to a relevant screen to show the details of the appointment
-      }
-    });
   }
 
   @override
@@ -131,13 +90,7 @@ class _HomeState extends State<Home> {
           backgroundColor: kGBlue,
           // elevation: 1,
           title: const Center(child: Text('Doctor Online')),
-          actions: <Widget>[
-            // IconButton(
-            //   icon: const Icon(Icons.notifications_sharp),
-            //   tooltip: 'Notification Icon',
-            //   onPressed: () {},
-            // ),
-          ], //<Widget>[]
+          actions: <Widget>[], //<Widget>[]
           leading: IconButton(
             icon: const Icon(Icons.menu),
             tooltip: 'Menu Icon',
@@ -150,359 +103,342 @@ class _HomeState extends State<Home> {
           ),
         ),
         // drawer: ,
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
-          decoration: PageDecoration.pageDecoration,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 10.h, bottom: 20.h),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Departments()),
-                              );
-                            },
-                            child: Container(
-                              width: 160,
-                              height: 100,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 4,
-                                    offset: Offset(4, 8), // Shadow position
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Image.asset(
-                                          'assets/images/book-appointment.png',
-                                          height: 36,
+        body: Center(
+          child: Container(
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 12.w),
+            decoration: PageDecoration.pageDecoration,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.h, bottom: 20.h),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(12.w),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Departments()),
+                                );
+                              },
+                              child: Container(
+                                width: 150.w,
+                                height: 120.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(12.r)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      blurRadius: 4.r,
+                                      offset: Offset(4.w, 8.w), // Shadow position
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(8.w),
+                                          child: Image.asset(
+                                            'assets/images/book-appointment.png',
+                                            height: 36.h,
+                                          ),
                                         ),
-                                      ),
-                                      const Text(
-                                        'Find And Book \n Appointment',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: kBlue),
-                                      ),
-                                    ],
-                                  ),
-                                  Button(
-                                    width: 140,
-                                    buttonText: 'Book Appointment',
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                Departments()),
-                                      );
-                                    },
-                                  ),
-                                ],
+                                        const Text(
+                                          'Find And Book \n Appointment',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: kBlue),
+                                        ),
+                                      ],
+                                    ),
+                                    Button(
+                                      width: 130.w,
+                                      buttonText: 'Book Appointment',
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Departments()),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Departments()),
-                              );
-                            },
-                            child: Container(
-                              width: 160,
-                              height: 100,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 4,
-                                    offset: Offset(4, 8), // Shadow position
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Image.asset(
-                                          'assets/images/call.png',
-                                          height: 36,
+                          Padding(
+                            padding: EdgeInsets.all(12.w),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Departments()),
+                                );
+                              },
+                              child: Container(
+                                width: 150.w,
+                                height: 120.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(12.r)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      blurRadius: 4.r,
+                                      offset: Offset(4.w, 8.w), // Shadow position
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(8.w),
+                                          child: Image.asset(
+                                            'assets/images/call.png',
+                                            height: 36.h,
+                                          ),
                                         ),
-                                      ),
-                                      const Text(
-                                        'Talk To Doctor \n       Online',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: kBlue),
-                                      ),
-                                    ],
-                                  ),
-                                  Button(
-                                    width: 140,
-                                    buttonText: 'Video Consultation',
-                                    color: Colors.redAccent,
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                Departments()),
-                                      );
-                                    },
-                                  ),
-                                ],
+                                        const Text(
+                                          'Talk To Doctor \n       Online',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: kBlue),
+                                        ),
+                                      ],
+                                    ),
+                                    Button(
+                                      width: 130.w,
+                                      buttonText: 'Video Consultation',
+                                      color: Colors.redAccent,
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Departments()),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 10, bottom: 12),
-                        child: Text(
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Text(
                           'Popular Doctors',
                           style: TextStyle(
                             color: Colors.black54,
                             fontFamily: 'Rubik',
                             fontWeight: FontWeight.w600,
-                            fontSize: 18,
+                            fontSize: 18.sp,
                           ),
                         ),
-                      ),
-                      StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('doctors')
-                            .where('experience', isGreaterThanOrEqualTo: '5 years') // Adjust the comparison value as per your requirements
-                            .orderBy('experience', descending: true)
-                            .snapshots(),
-                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (snapshot.hasError) {
-                            return Text('Something went wrong');
-                          }
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('doctors')
+                              .where('experience',
+                              isGreaterThanOrEqualTo: '5 years') // Adjust the comparison value as per your requirements
+                              .orderBy('experience', descending: true)
+                              .snapshots(),
+                          builder: (BuildContext context, AsyncSnapshot<
+                              QuerySnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              return Text('Something went wrong');
+                            }
 
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          }
+                            if (snapshot.connectionState == ConnectionState
+                                .waiting) {
+                              return CircularProgressIndicator();
+                            }
 
-                          final data = snapshot.data!;
+                            final data = snapshot.data!;
 
-                          return SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: data.docs
-                                  .map((doc) {
-                                final doctor = Doctor.fromSnapshot(doc);
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: DoctorCardVertical(
-                                    doctorpicture: doctor.imageUrl,
-                                    name: doctor.name,
-                                    specialization: doctor.speciality,
-                                  ),
-                                );
-                              })
-                                  .take(3) // Display only three items
-                                  .toList(),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: data.docs
+                                    .map((doc) {
+                                  final doctor = Doctor.fromSnapshot(doc);
+                                  return Padding(
+                                    padding: EdgeInsets.all(6.w),
+                                    child: DoctorCardVertical(
+                                      doctorpicture: doctor.imageUrl,
+                                      name: doctor.name,
+                                      specialization: doctor.speciality,
+                                    ),
+                                  );
+                                })
+                                    .take(5) // Display only three items
+                                    .toList(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                // SingleChildScrollView(
-                //   scrollDirection: Axis.horizontal,
-                //   child: Row(
-                //     children: [
-                //       DoctorCardVertical(
-                //         name: 'Lewis Neill',
-                //         specialization: 'Dentist',
-                //         doctorpicture: 'assets/images/cheerful-doctor.jpg',
-                //       ),
-                //       const SizedBox(
-                //         width: 12,
-                //       ),
-                //       DoctorCardVertical(
-                //         name: 'Rodney Jackson',
-                //         specialization: 'Heart Specialist',
-                //         doctorpicture: 'assets/images/ly1.png',
-                //       ),
-                //       const SizedBox(
-                //         width: 12,
-                //       ),
-                //       DoctorCardVertical(
-                //         name: 'Violet Zellweger',
-                //         specialization: 'Child Specialist',
-                //         doctorpicture: 'assets/images/gy1.png',
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                SizedBox(
-                  height: 36.h,
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Text(
+                  SizedBox(
+                    height: 36.h,
+                  ),
+                  Text(
                     'Explore more',
                     style: TextStyle(
                         color: Colors.black54,
                         fontFamily: 'Rubik',
                         fontWeight: FontWeight.w600,
-                        fontSize: 18),
+                        fontSize: 18.sp,
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(5.5),
-                      child: Button(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EmergencyDoctorPage()),
-                          );
-                        },
-                        width: 112,
-                        color: Colors.white,
-                        textColor: Colors.black87,
-                        childWidget: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Image.asset(
-                                'assets/images/online.png',
-                                height: 36,
-                              ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(6.w),
+                          child: Button(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EmergencyDoctorPage()),
+                              );
+                            },
+                            width: 112.w,
+                            color: Colors.white,
+                            textColor: Colors.black87,
+                            childWidget: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: 4.w),
+                                  child: Image.asset(
+                                    'assets/images/online.png',
+                                    height: 36.h,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(4.w),
+                                  child: const Center(
+                                      child: Text(
+                                        'Call Doctor\n      Now',
+                                        style: TextStyle(color: Colors.black45),
+                                      )),
+                                ),
+                              ],
                             ),
-                            const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: Center(
-                                  child: Text(
-                                'Call Doctor\n      Now',
-                                style: TextStyle(color: Colors.black45),
-                              )),
-                            ),
-                          ],
+                            height: 98.h,
+                          ),
                         ),
-                        height: 80,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.5),
-                      child: Button(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DiagnosticTests()),
-                          );
-                        },
-                        width: 112,
-                        color: Colors.white,
-                        textColor: Colors.black87,
-                        childWidget: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Image.asset(
-                                'assets/images/lab-technician.png',
-                                height: 36,
-                              ),
+                        Padding(
+                          padding: EdgeInsets.all(6.w),
+                          child: Button(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DiagnosticTests()),
+                              );
+                            },
+                            width: 112,
+                            color: Colors.white,
+                            textColor: Colors.black87,
+                            childWidget: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: 4.w),
+                                  child: Image.asset(
+                                    'assets/images/lab-technician.png',
+                                    height: 36,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(4.w),
+                                  child: const Center(
+                                      child: Text(
+                                        'Book Lab\n     Test',
+                                        style: TextStyle(color: Colors.black45),
+                                      )),
+                                ),
+                              ],
                             ),
-                            const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: Center(
-                                  child: Text(
-                                'Book Lab\n     Test',
-                                style: TextStyle(color: Colors.black45),
-                              )),
-                            ),
-                          ],
+                            height: 98.h,
+                          ),
                         ),
-                        height: 80,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.5),
-                      child: Button(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AskDoctorPage()),
-                          );
-                        },
-                        width: 112,
-                        color: Colors.white,
-                        textColor: Colors.black87,
-                        childWidget: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Image.asset(
-                                'assets/images/ask-doctor.png',
-                                height: 36,
-                              ),
+                        Padding(
+                          padding: EdgeInsets.all(6.w),
+                          child: Button(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const AskDoctorPage()),
+                              );
+                            },
+                            width: 112.w,
+                            color: Colors.white,
+                            textColor: Colors.black87,
+                            childWidget: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: 4.w),
+                                  child: Image.asset(
+                                    'assets/images/ask-doctor.png',
+                                    height: 36.h,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(4.w),
+                                  child: const Center(
+                                      child: Text(
+                                        'Ask Doctor\n   For Free',
+                                        style: TextStyle(color: Colors.black45),
+                                      )),
+                                ),
+                              ],
                             ),
-                            const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: Center(
-                                  child: Text(
-                                'Ask Doctor\n   For Free',
-                                style: TextStyle(color: Colors.black45),
-                              )),
-                            ),
-                          ],
+                            height: 98.h,
+                          ),
                         ),
-                        height: 80,
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         ));

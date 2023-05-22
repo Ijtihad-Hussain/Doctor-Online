@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tele_consult/screens/aboutDoctor/appointment.dart';
 import 'package:tele_consult/screens/home_screen.dart';
 import 'package:tele_consult/utils/colors.dart';
 

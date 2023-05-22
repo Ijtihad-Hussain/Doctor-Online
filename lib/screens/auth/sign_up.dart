@@ -36,35 +36,8 @@ class _SignUpState extends State<SignUp> {
     });
   }
 
-  // submit() async {
-  //   if (formKey.currentState!.validate()) {
-  //     setState(() {
-  //       formStateLoading = true;
-  //     });
-  //     String? accountStatus = await FirebaseServices.createAccount(
-  //         emailC.text, passwordC.text, nameC.text);
-  //     print('accoutStatus:$accountStatus');
-  //     if (accountStatus != null) {
-  //       setState(() {
-  //         formStateLoading = false;
-  //       });
-  //     } else {
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (_) => SignIn(),
-  //           // OTPScreen(phoneC.text),
-  //         ),
-  //       );
-  //       // const SignIn()));
-  //     }
-  //   }
-  // }
-
   @override
   void initState() {
-    // TODO: implement initState
-    countryController.text = "+92";
     super.initState();
   }
 
