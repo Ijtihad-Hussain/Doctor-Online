@@ -31,13 +31,15 @@ dependencies:
   firebase_auth_web: ^5.2.9
   flutter_screenutil: ^5.7.0
   file_picker:
-  zego_uikit_prebuilt_call: ^3.3.13
   firebase_messaging: ^14.6.0
   firebase_storage: ^11.2.1
   flutter_riverpod: ^2.3.6
   flutter_local_notifications: ^14.1.0
   http:
   url_launcher: ^6.1.11
+  zego_uikit_prebuilt_call: ^3.1.0
+  zego_uikit_signaling_plugin: ^2.0.3
+  zego_uikit_prebuilt_live_streaming: ^2.3.6
 
 dev_dependencies:
   flutter_test:

@@ -3,14 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tele_consult/screens/auth/sign_in.dart';
-import 'package:tele_consult/screens/home_screen.dart';
 import 'package:tele_consult/widgets/customTextFormField.dart';
-
-import '../../services/firebase_services.dart';
 import '../../widgets/button.dart';
+import '../../widgets/newTextFormField.dart';
 import '../../widgets/pageDecoration.dart';
-import '../User/menu.dart';
-import 'otpScreen.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -116,43 +112,29 @@ class _SignUpState extends State<SignUp> {
                   obscureText: obsText,
                   border: const OutlineInputBorder(),
                 ),
-                // const SizedBox(height: 10),
-                // Stack(
-                //   children: [
-                //     CheckboxListTile(
-                //       value: checkedValue,
-                //       onChanged: (var newValue) {
-                //         setState(() {
-                //           checkedValue = newValue!;
-                //         });
-                //       },
-                //       controlAffinity: ListTileControlAffinity
-                //           .leading, //  <-- leading Checkbox
-                //     ),
-                //     const Positioned(
-                //       top: 22,
-                //       left: 50,
-                //       child: Text(
-                //         "I agree with the Terms of Service & Privacy Policy",
-                //         style: TextStyle(
-                //           color: Colors.black38,
-                //           fontSize: 10,
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
+                const SizedBox(height: 10),
+                NewCustomTextFormField(
+                  validate: (v) {
+                    if (v!.isEmpty) {
+                      return "Phone number should not be empty";
+                    } else if (v.length != 11) {
+                      return "Phone number should be exactly 11 digits";
+                    }
+                    return null;
+                  },
+                  hintText: 'Phone...',
+                  controller: phoneC,
+                  keyboardType: TextInputType.phone,
+                  border: const OutlineInputBorder(),
+                ),
                 const SizedBox(height: 10),
                 Button(
-                  // color: kInGreen,
                   buttonText: 'Sign Up',
                   width: 180.w,
                   onPressed: () async {
                     registerUser();
-                    // submit();
                   },
                   isLoading: formStateLoading,
-                  // isLoading: formStateLoading,
                 ),
                 const SizedBox(height: 5),
                 TextButton(
@@ -181,42 +163,41 @@ class _SignUpState extends State<SignUp> {
 
     final patientCollectionReference =
     FirebaseFirestore.instance.collection('patients');
+
     // Save the data to Firestore
     try {
       final DocumentReference userDocumentReference =
       await userCollectionReference.add({
-        'patientId': '', // Placeholder value for doctorId
+        'patientId': '', // Placeholder value for patientId
         'email': emailC.text,
         'name': nameC.text,
         'role': 'patient',
+        'phone': phoneC.text, // Add the 'phone' field
       });
 
-      // Set the document ID as the doctorId field value
       await userDocumentReference.update({
         'patientId': userDocumentReference.id,
       });
 
-      // Create user in Firebase Authentication with the doctor's email and password
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
         email: emailC.text,
         password: passwordC.text,
       );
 
-      // Add doctor data to the 'doctors' collection
       await patientCollectionReference
           .doc(userDocumentReference.id)
           .set({
         'email': emailC.text,
         'name': nameC.text,
         'role': 'patient',
+        'phone': phoneC.text, // Add the 'phone' field
       });
 
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => SignIn(),
-          // OTPScreen(phoneC.text),
         ),
       );
 

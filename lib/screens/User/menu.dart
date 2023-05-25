@@ -2,24 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:tele_consult/screens/User/medicalRecords.dart';
-import 'package:tele_consult/screens/User/medicineOrderPage.dart';
-import 'package:tele_consult/screens/addTests.dart';
 import 'package:tele_consult/screens/diagnosticTests.dart';
 import 'package:tele_consult/screens/helpCenter.dart';
 import 'package:tele_consult/screens/privacyPolicy.dart';
 import 'package:tele_consult/screens/setting.dart';
-import 'package:tele_consult/utils/colors.dart';
 import 'package:tele_consult/widgets/boxContainer.dart';
-import 'package:tele_consult/widgets/customTextFormField.dart';
-import 'package:tele_consult/widgets/doctorCardCircular.dart';
 import 'package:tele_consult/widgets/pageDecoration.dart';
 
 import '../../services/firebase_services.dart';
-import '../../widgets/button.dart';
 import '../../widgets/firstLetterAvatar.dart';
 import '../auth/sign_in.dart';
-import 'myDoctors.dart';
 
 class Menu extends StatefulWidget {
   @override

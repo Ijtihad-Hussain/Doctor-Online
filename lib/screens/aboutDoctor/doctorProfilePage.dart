@@ -169,135 +169,146 @@ Widget _patientDetailsDialog(BuildContext context) {
   final TextEditingController genderController = TextEditingController();
   final TextEditingController mobileNumberController = TextEditingController();
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Add GlobalKey
+
   return AlertDialog(
     title: Text(
       'Patient Details',
       style: TextStyle(fontWeight: FontWeight.bold),
     ),
     content: Container(
-      height: 320.h,
+      height: 380.h,
       child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Name',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            TextFormField(
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey,
-                hintText: 'Name',
+        child: Form(
+          key: _formKey, // Assign the GlobalKey to the Form
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Name',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              style: TextStyle(fontSize: 16),
-              controller: nameController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your name';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 12),
-            Text(
-              'Age',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Container(
-              width: 220,
-              height: 40,
-              child: TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.grey,
-                  hintText: 'Age',
-                ),
-                style: TextStyle(fontSize: 16),
-                controller: ageController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your age';
-                  }
-                  int? age = int.tryParse(value);
-                  if (age == null || age <= 0) {
-                    return 'Invalid age';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            SizedBox(height: 12),
-            Text(
-              'Gender',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Container(
-              width: 220,
-              height: 40,
-              child: DropdownButtonFormField<String>(
-                value: genderController.text.isEmpty ? null : genderController.text,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.grey,
-                  hintText: 'Select Gender',
-                ),
-                items: [
-                  DropdownMenuItem<String>(
-                    value: 'Male',
-                    child: Text('Male'),
+              SizedBox(height: 8),
+              Container(
+                width: 220,
+                height: 40,
+                child: TextFormField(
+                  keyboardType: TextInputType.name,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey,
+                    hintText: 'Name',
                   ),
-                  DropdownMenuItem<String>(
-                    value: 'Female',
-                    child: Text('Female'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'Other',
-                    child: Text('Other'),
-                  ),
-                ],
-                onChanged: (value) {
-                  genderController.text = value!;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select your gender';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            SizedBox(height: 12),
-            Text(
-              'Mobile Number',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Container(
-              width: 220,
-              height: 40,
-              child: TextFormField(
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.grey,
-                  hintText: '+17281787237',
+                  style: TextStyle(fontSize: 16),
+                  controller: nameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
                 ),
-                controller: mobileNumberController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your mobile number';
-                  }
-                  return null;
-                },
               ),
-            ),
-          ],
+              SizedBox(height: 12),
+              Text(
+                'Age',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Container(
+                width: 220,
+                height: 40,
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey,
+                    hintText: 'Age',
+                  ),
+                  style: TextStyle(fontSize: 16),
+                  controller: ageController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your age';
+                    }
+                    int? age = int.tryParse(value);
+                    if (age == null || age <= 0) {
+                      return 'Invalid age';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              SizedBox(height: 12),
+              Text(
+                'Gender',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Container(
+                width: 220,
+                height: 40,
+                child: DropdownButtonFormField<String>(
+                  value: genderController.text.isEmpty ? null : genderController.text,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey,
+                    hintText: 'Select Gender',
+                  ),
+                  items: [
+                    DropdownMenuItem<String>(
+                      value: 'Male',
+                      child: Text('Male'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'Female',
+                      child: Text('Female'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'Other',
+                      child: Text('Other'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    genderController.text = value!;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select your gender';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              SizedBox(height: 12),
+              const Text(
+                'Mobile Number',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Container(
+                width: 220,
+                height: 40,
+                child: TextFormField(
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey,
+                    hintText: '07281787237',
+                  ),
+                  controller: mobileNumberController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your mobile number';
+                    } else if (value.length != 11) {
+                      return 'Phone number should be exactly 11 digits';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     ),
@@ -305,26 +316,29 @@ Widget _patientDetailsDialog(BuildContext context) {
       Button(
         buttonText: 'Book',
         onPressed: () {
-          String name = nameController.text;
-          int age = int.tryParse(ageController.text) ?? 0;
-          String gender = genderController.text;
-          String mobileNumber = mobileNumberController.text;
+          if (_formKey.currentState!.validate()) { // Use the GlobalKey for validation
+            String name = nameController.text;
+            int age = int.tryParse(ageController.text) ?? 0;
+            String gender = genderController.text;
+            String mobileNumber = mobileNumberController.text;
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AppointmentNext(
-                name: name,
-                age: age,
-                gender: gender,
-                mobileNumber: mobileNumber,
-                doctorName: DoctorName!,
-                doctorEmail: doctorEmail!,
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AppointmentNext(
+                  name: name,
+                  age: age,
+                  gender: gender,
+                  mobileNumber: mobileNumber,
+                  doctorName: DoctorName!,
+                  doctorEmail: doctorEmail!,
+                ),
               ),
-            ),
-          );
+            );
+          }
         },
       ),
     ],
   );
 }
+

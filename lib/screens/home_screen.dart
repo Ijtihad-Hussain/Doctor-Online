@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:tele_consult/screens/User/contacts.dart';
 import 'package:tele_consult/screens/User/myAppointmentsScreen.dart';
-import 'package:tele_consult/screens/aboutDoctor/popularDoctors.dart';
 import 'package:tele_consult/screens/askDoctorPage.dart';
 import 'package:tele_consult/screens/departments.dart';
 import 'package:tele_consult/screens/diagnosticTests.dart';
 import 'package:tele_consult/screens/emergencyDoctorPage.dart';
+import 'package:tele_consult/screens/prescriptionUploadPage.dart';
 import 'package:tele_consult/widgets/doctorCardVertical.dart';
 import 'package:tele_consult/widgets/pageDecoration.dart';
 import '../models/doctor.dart';
@@ -406,7 +403,7 @@ class _HomeState extends State<Home> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const AskDoctorPage()),
+                                    builder: (context) => PrescriptionUploadPage()),
                               );
                             },
                             width: 112.w,
@@ -416,8 +413,8 @@ class _HomeState extends State<Home> {
                               children: [
                                 Padding(
                                   padding: EdgeInsets.only(top: 4.w),
-                                  child: Image.asset(
-                                    'assets/images/ask-doctor.png',
+                                  child: Image.network(
+                                    'https://img.freepik.com/free-icon/medicines_318-640321.jpg?size=626&ext=jpg&ga=GA1.2.653878381.1678705928&semt=ais',
                                     height: 36.h,
                                   ),
                                 ),
@@ -425,7 +422,7 @@ class _HomeState extends State<Home> {
                                   padding: EdgeInsets.all(4.w),
                                   child: const Center(
                                       child: Text(
-                                        'Ask Doctor\n   For Free',
+                                        '  Order\n Medicines',
                                         style: TextStyle(color: Colors.black45),
                                       )),
                                 ),

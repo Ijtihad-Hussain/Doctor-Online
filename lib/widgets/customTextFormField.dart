@@ -47,8 +47,8 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: height ?? 60,
-      width: width ?? 300,
+      height: height ?? 46,
+      width: width ?? 280,
       margin: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: color ?? Colors.white,
@@ -74,11 +74,6 @@ class CustomTextFormField extends StatelessWidget {
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
           border: border ?? InputBorder.none,
-          // enabledBorder: const OutlineInputBorder(
-          //   borderSide: BorderSide(
-          //       width: 3, color: Colors.black38
-          //   ),
-          // )
         ),
       ),
     );

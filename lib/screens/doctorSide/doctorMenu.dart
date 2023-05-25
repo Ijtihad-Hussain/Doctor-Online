@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tele_consult/screens/doctorSide/appointments.dart';
 
 import '../../services/firebase_services.dart';
 import '../../utils/colors.dart';
 import '../../widgets/boxContainer.dart';
+import '../../widgets/firstLetterAvatar.dart';
 import '../User/medicalRecords.dart';
 import '../User/myDoctors.dart';
 import '../addTests.dart';
@@ -22,21 +25,44 @@ class DoctorMenu extends StatefulWidget {
 }
 
 class _DoctorMenuState extends State<DoctorMenu> {
-  String userName = 'Dr. Ijtihad Hussain';
+  String userName = 'Doctor Online';
 
-  void getData() async{
-    User? user = await FirebaseAuth.instance.currentUser;
-    var userVar = await FirebaseFirestore.instance.collection('Users').doc(user?.uid).get();
-    setState ((){
-      userName = userVar.data()!['name'];
-    });
+  Future<String?> getCurrentUserName() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+
+    if (user != null) {
+      String? userEmail = user.email;
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userEmail)
+          .get();
+
+      if (userSnapshot.exists) {
+        Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+
+        if (userData != null && userData.containsKey('name')) {
+          print(userData['name']);
+          userName = userData['name'];
+          return userData['name'] as String?;
+        }
+      }
+    }
+    print('null');
+    return null;
+  }
+
+  bool isLoggedIn() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    return currentUser != null;
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    getCurrentUserName();
+    print(userName);
   }
 
   @override
@@ -53,34 +79,18 @@ class _DoctorMenuState extends State<DoctorMenu> {
                 padding: const EdgeInsets.only(left: 20, top: 60),
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      backgroundImage:
-                      AssetImage('assets/images/doctorm.jpg'),
-                      radius: 32,
+                    FirstLetterAvatar(
+                      text: userName,
+                      radius: 24.r,
+                      backgroundColor: Colors.blue,
+                      textColor: Colors.white,
                     ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5, bottom: 5),
-                          child: Text(
-                            userName,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        Row(
-                          children: const [
-                            Padding(
-                              padding: EdgeInsets.only(left: 12),
-                              child: Icon(Icons.call, size: 14, color: Colors.white),
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              '033472873',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5, bottom: 5),
+                      child: Text(
+                        userName,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
@@ -91,49 +101,12 @@ class _DoctorMenuState extends State<DoctorMenu> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MyDoctors()),
+                      MaterialPageRoute(builder: (context) => Appointments()),
                     );
                   },
                   child: BoxContainer(
-                    text: 'Patients',
+                    text: 'Appointments',
                     iconLeft: const Icon(Icons.contact_page_outlined),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 120),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MedicalRecords()),
-                    );
-                  },
-                  child: BoxContainer(
-                    text: 'Medical Records',
-                    iconLeft: const Icon(Icons.medical_information),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 120),
-                child: BoxContainer(
-                  text: 'Payments',
-                  iconLeft: const Icon(Icons.payment),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 120),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddTests()),
-                    );
-                  },
-                  child: BoxContainer(
-                    text: 'Test Bookings',
-                    iconLeft: const Icon(Icons.book),
                   ),
                 ),
               ),
@@ -196,9 +169,22 @@ class _DoctorMenuState extends State<DoctorMenu> {
                             _buildLogoutDialog(context),
                       );
                     },
-                    child: const Text(
-                      'Logout',
-                      style: TextStyle(color: Colors.white, fontSize: 22),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (isLoggedIn()) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                _buildLogoutDialog(context),
+                          );
+                        } else {
+                          Navigator.pushNamed(context, '/login');
+                        }
+                      },
+                      child: Text(
+                        isLoggedIn() ? 'Logout' : 'Log in',
+                        style: TextStyle(color: Colors.black87, fontSize: 22),
+                      ),
                     ),
                   ),
                 ],

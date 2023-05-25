@@ -4,15 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:calendar_builder/calendar_builder.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:tele_consult/screens/User/paymentPage.dart';
-import 'package:tele_consult/screens/aboutDoctor/thankYouScreen.dart';
-import 'package:tele_consult/utils/colors.dart';
+import 'package:tele_consult/screens/User/paymentWhatsapp.dart';
 import '../../widgets/alarmTimeCard.dart';
 import '../../widgets/button.dart';
-import '../../widgets/pageDecoration.dart';
 import '../../widgets/timeCard.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -129,6 +124,7 @@ class _AppointmentNextState extends State<AppointmentNext> {
   @override
   void initState() {
     super.initState();
+    _getSubscribedDevicesTokens();
   }
 
   @override
@@ -314,7 +310,7 @@ class _AppointmentNextState extends State<AppointmentNext> {
                   final CollectionReference appointmentsCollection =
                   FirebaseFirestore.instance.collection('appointments');
 
-                  await appointmentsCollection.add({
+                  DocumentReference appointmentDocRef = await appointmentsCollection.add({
                     'name': name,
                     'age': age,
                     'gender': gender,
@@ -325,9 +321,16 @@ class _AppointmentNextState extends State<AppointmentNext> {
                     'selectedTime': selectedTime,
                     'selectedDate': selectedDate,
                     'selectedAlarmTime': _selectedAlarmTime,
+                    'appointmentId': '', // Initialize with an empty string
+                    'status': 'pending',
                   });
 
-                  print('Appointment added to Firestore');
+                  // Get the document ID assigned to the appointment
+                  String appointmentId = appointmentDocRef.id;
+                  print('Appointment added to Firestore with ID: $appointmentId');
+
+                  // Update the document with the appointment ID
+                  await appointmentDocRef.update({'appointmentId': appointmentId});
 
                   // Send notification to subscribed devices
                   String? tokens = await _getSubscribedDevicesTokens();
@@ -335,7 +338,7 @@ class _AppointmentNextState extends State<AppointmentNext> {
                     'title': 'New Appointment',
                     'body': 'You have a new appointment with $doctorName on $selectedDate at $selectedTime.',
                     'data': {
-                      'appointmentId': 'your_appointment_id', // Replace with the actual appointment ID if needed
+                      'appointmentId': appointmentId,
                     },
                   });
                 } catch (e) {
@@ -345,7 +348,7 @@ class _AppointmentNextState extends State<AppointmentNext> {
                 // Navigate to the PaymentPage
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PaymentPage()),
+                  MaterialPageRoute(builder: (context) => PaymentWhatsapp(title: 'IJTIHAD HUSSAIN',bankName: 'Habib Metropolitan Bank', bankAccountNo: '06-03-45-020311-714-000142657', iban: 'PK72MPBL0279527146142617', amountToPay: 500)),
                 );
               },
             )

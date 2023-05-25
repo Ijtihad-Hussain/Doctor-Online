@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Utils {
-  
-  static int appId =  1024890136;
-  static String appSignin = "c0cfd97037abfda20c46f781f217d056175ebcef35c17a0f724c59aba8eddf53" ;
+
+  static int appId =  1926353592; // enter your id
+  static String appSignin = "4c93c498263678d552ab499f01fc2ec8bff5ba181c9eeca5f657bcddc26d6837";
 
   void toastMessage(String message){
     Fluttertoast.showToast(

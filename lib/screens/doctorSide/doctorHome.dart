@@ -1,15 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tele_consult/screens/Chat/testMessagingScreen.dart';
+import 'package:tele_consult/screens/Chat/video_calling_page.dart';
 import 'package:tele_consult/screens/doctorSide/doctorMenu.dart';
 import 'package:tele_consult/utils/colors.dart';
 import 'package:tele_consult/utils/customTextStyles.dart';
 import '../../widgets/apointmentsBox.dart';
 import '../../widgets/button.dart';
 import '../../widgets/patientCard.dart';
+import '../Chat/audio_calling_page.dart';
 import 'appointments.dart';
 import 'contacts.dart';
 
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DoctorHome extends StatefulWidget {
@@ -80,14 +83,7 @@ class _DoctorHomeState extends State<DoctorHome> {
           IconButton(
             onPressed: _toggleStatus,
             icon: Icon(_isOnline ? Icons.visibility : Icons.visibility_off),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/doctorm.jpg'),
-              radius: 22,
-            ),
-          ), //IconButton
+          ),//IconButton
         ], //<Widget>[]
         leading: IconButton(
           icon: const Icon(Icons.menu),
@@ -104,107 +100,91 @@ class _DoctorHomeState extends State<DoctorHome> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-        child: Column(
-          children: [
-            Wrap(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Appointments()),
-                      );
-                    },
-                    child: AppointmentsBox(
-                      color: kGBlue,
-                      icon: Icon(Icons.medication),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Contacts()),
-                      );
-                    },
-                    child: AppointmentsBox(
-                      color: kGBlue,
-                      icon: Icon(Icons.chat),
-                      text: 'Chats',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Upcoming Appointments',
-                style: CustomTextStyles.boldStyle.copyWith(fontSize: 16),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Row(
-                children: const [
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Wrap(
+                children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
-                    child: Text(
-                      'Name',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Appointments()),
+                        );
+                      },
+                      child: AppointmentsBox(
+                        color: kGBlue,
+                        icon: Icon(Icons.medication),
+                      ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 100),
-                    child: Text(
-                      'Date',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => GroupCallScreen()),
+                        );
+                      },
+                      child: AppointmentsBox(
+                        color: kGBlue,
+                        icon: Icon(Icons.chat),
+                        text: 'Online Consultations',
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
-            ),
-            FutureBuilder(
-              future: getUpcomingAppointments(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<Appointment>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (!snapshot.hasData) {
-                  return Center(child: Text('No upcoming appointments.'));
-                } else {
-                  return Column(
-                    children: [
-                      for (var appointment in snapshot.data!)
-                        PatientCard(
-                            name: appointment.name, day: appointment.day),
-                    ],
-                  );
-                }
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Button(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Appointments(),
-                    ),
-                  );
-                },
-                buttonText: 'View All',
-                width: 200,
-                color: kGBlue,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Upcoming Appointments',
+                  style: CustomTextStyles.boldStyle.copyWith(fontSize: 16),
+                ),
               ),
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.all(5.h),
+              ),
+              FutureBuilder(
+                future: getUpcomingAppointments(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Appointment>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (!snapshot.hasData) {
+                    return Center(child: Text('No upcoming appointments.'));
+                  } else {
+                    return Column(
+                      children: [
+                        for (var appointment in snapshot.data!)
+                          PatientCard(
+                              name: appointment.name, day: appointment.day),
+                      ],
+                    );
+                  }
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Button(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Appointments(),
+                      ),
+                    );
+                  },
+                  buttonText: 'View All',
+                  width: 200,
+                  color: kGBlue,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -214,10 +194,12 @@ class _DoctorHomeState extends State<DoctorHome> {
     var now = DateTime.now();
     var querySnapshot = await FirebaseFirestore.instance
         .collection('appointments')
+        .where('doctorEmail', isEqualTo: FirebaseAuth.instance.currentUser?.email) // Replace 'doctorId' with the actual field name in your Firestore collection
         .where('date', isGreaterThan: now)
         .orderBy('date')
         .limit(4)
         .get();
+
     List<Appointment> appointments = [];
     for (var documentSnapshot in querySnapshot.docs) {
       var data = documentSnapshot.data();
