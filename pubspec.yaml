@@ -26,20 +26,20 @@ dependencies:
   intl: ^0.17.0
   flutter_admin_scaffold: ^1.1.2
   image_picker: ^0.8.6+1
-  responsive_builder: ^0.6.3
+  responsive_builder:
   firebase_core_web: ^2.2.2
   firebase_auth_web: ^5.2.9
   flutter_screenutil: ^5.7.0
   file_picker:
   firebase_messaging: ^14.6.0
   firebase_storage: ^11.2.1
-  flutter_riverpod: ^2.3.6
   flutter_local_notifications: ^14.1.0
   http:
   url_launcher: ^6.1.11
-  zego_uikit_prebuilt_call: ^3.1.0
-  zego_uikit_signaling_plugin: ^2.0.3
-  zego_uikit_prebuilt_live_streaming: ^2.3.6
+  zego_uikit_prebuilt_call:
+  zego_uikit_signaling_plugin:
+  zego_uikit_prebuilt_live_streaming:
+  get:
 
 dev_dependencies:
   flutter_test:
